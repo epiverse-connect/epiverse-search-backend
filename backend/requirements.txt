@@ -25,7 +25,7 @@ pynndescent==0.5.13
 sqlparse==0.5.1
 starlette==0.38.6
 #tokenizers>0.14.1
-#torch==2.4.1
+torch==2.4.1
 #torchaudio==2.4.1
 #torchvision==0.19.1
 transformers==4.45.1

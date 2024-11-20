@@ -6,14 +6,16 @@ from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModel, pipeline
 from elasticsearch import Elasticsearch
 import torch
+from fastapi.middleware.cors import CORSMiddleware
+
+
+
+
 # Load the BERT tokenizer and model
 
 # Initialize Elasticsearch client
 # es = Elasticsearch("http://127.0.0.1:9200")
-
-es = Elasticsearch("http://host.docker.internal:9200")
-
-
+es = Elasticsearch("http://elasticsearch:9200")
 
 
 if es.ping():
@@ -25,7 +27,23 @@ else:
 # Initialize tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained('distilbert/distilbert-base-uncased')
 # Initialize the FastAPI application
-app = FastAPI()
+app = FastAPI(debug=True)
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:8000",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+
 model = AutoModel.from_pretrained('distilbert/distilbert-base-uncased')
 
 # Define the request body structure using Pydantic
@@ -39,9 +57,10 @@ class UserQuery(BaseModel):
 
 #     query = input.query_user
 
+
 def get_data(query:str = Query(..., description="User query string")):
     # Python logic or function call here
-
+    print("Running search for this keyword -->:{}".format(query))
     inputs = tokenizer(query, return_tensors='pt', padding=True, truncation=True)
     
     with torch.no_grad():
@@ -55,10 +74,10 @@ def get_data(query:str = Query(..., description="User query string")):
                 "k": 5,
                 "num_candidates": 100
                 },
-            "fields": [ "text" ]
+            "fields":[ "text" ]
             }
         # Perform the kNN search and print the results
-        response = es.search(index='embedding_index_demo_include_vignette', body=search)
+        response = es.search(index='embedding_v2', body=search)
         print(response)
     case_list = []
     
