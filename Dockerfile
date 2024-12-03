@@ -8,7 +8,7 @@ COPY /backend/search_api_endpoint.py .
 
 RUN pip install pandas elasticsearch requests
 RUN pip install -r requirements.txt
-#EXPOSE 8000
+EXPOSE 8000
 
 # 
 # RUN pip install -r requirements.txt

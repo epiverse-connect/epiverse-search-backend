@@ -9,10 +9,21 @@ services:
             - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
             - xpack.security.enabled=false
             - xpack.security.http.ssl.enabled=false
+#            - network.host=0.0.0.0
+#            - http.port=9200
+            - http.cors.enabled=true
+            - http.cors.allow-origin="*"
+#            - http.cors.allow-headers=Authorization,X-Requested-With,Content-Type,Content-Length
+#            - http.cors.allow-credentials=true
+#            - ELASTICSEARCH_HOST=http://0.0.0.0:9200
+#            - 
+
         ports:
             - "9200:9200"
         volumes:
             - es_data:/usr/share/elasticsearch/data
+        networks:
+            - elastic_v1
 
     loader:
         build:
@@ -21,26 +32,51 @@ services:
         container_name: loader
         depends_on:
             - elasticsearch
-      
+ #       environment:
+ #           - ELASTICSEARCH_HOST=http://0.0.0.0:9200
+ #       extra_hosts:
+ #           - "host.docker.internal:9200"
+        networks:
+             - elastic_v1
+
+
     backend:
         image : pytorch/pytorch
         build:
           context: .
           dockerfile: Dockerfile
-          platforms: 
-            - linux/arm64
+#          platforms: 
+#            - linux/arm64
         container_name: fastapi
+        environment:
+            - discovery.type=single-node
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - xpack.security.enabled=false
+            - xpack.security.http.ssl.enabled=false
+#            - network.host=0.0.0.0
+#            - http.port=9200
+#            - http.cors.enabled=true
+#            - http.cors.allow-origin=*
+#            - http.cors.allow-headers=Authorization,X-Requested-With,Content-Type,Content-Length
+#            - http.cors.allow-credentials=true
+            - ELASTICSEARCH_HOST=elasticsearch
+
         depends_on:
             - elasticsearch
-        
+        networks:
+            - elastic_v1
         ports:
             - "8000:8000"
-
-        command: ["uvicorn", "search_api_endpoint:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
-
+#        extra_hosts:
+#            - "host.docker.internal:8000"
+        command: ["uvicorn", "search_api_endpoint:app", "--host", "0.0.0.0", "--port", "8000" ] #, "--reload"]
+    
 
 volumes:
   es_data:
 
 
 
+networks:
+  elastic_v1:
+    driver: bridge

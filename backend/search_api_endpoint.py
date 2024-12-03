@@ -7,16 +7,17 @@ from transformers import AutoTokenizer, AutoModel, pipeline
 from elasticsearch import Elasticsearch
 import torch
 from fastapi.middleware.cors import CORSMiddleware
+import requests
+import time 
 
-
-
+time.sleep(20) # adding wait timefor elastic to get started 
 
 # Load the BERT tokenizer and model
 
 # Initialize Elasticsearch client
-# es = Elasticsearch("http://127.0.0.1:9200")
-es = Elasticsearch("http://host.docker.internal:9200")
-
+es = Elasticsearch("http://elasticsearch:9200", request_timeout=900)
+#es = Elasticsearch("http://host.docker.internal:9200")
+#es = Elasticsearch("http://elasticsearch.local:9200")
 
 if es.ping():
     print("Successfully connected to Elasticsearch")
@@ -33,6 +34,7 @@ origins = [
     "http://localhost",
     "http://localhost:8080",
     "http://localhost:8000",
+	"http://localhost:9200",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -77,7 +79,7 @@ def get_data(query:str = Query(..., description="User query string")):
             "fields":[ "text" ]
             }
         # Perform the kNN search and print the results
-        response = es.search(index='embedding_v2', body=search)
+        response = es.options(request_timeout=30).search(index='embedding_v2', body=search)
         print(response)
     case_list = []
     

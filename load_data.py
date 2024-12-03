@@ -6,15 +6,16 @@ import requests
 from elasticsearch import helpers
 import csv
 import io
-import ast 
-
+import ast
 # Wait for Elasticsearch to start
-time.sleep(10)
+#time.sleep(20)
 
 # Connect to Elasticsearch
-es = Elasticsearch("http://host.docker.internal:9200")
+#es = Elasticsearch("http://host.docker.internal:9200")
+#es = Elasticsearch("http://192.168.16.2:9200")
+es = Elasticsearch("http://0.0.0.0:9200", timeout=900)
+#es = Elasticsearch("http://elasticsearch_demo_gambia:9200", timeout=900)
 
-#es = Elasticsearch("http://elasticsearch:9200")
 if es.ping():
     print("Successfully connected to Elasticsearch")
 else:
@@ -38,12 +39,13 @@ else:
 df = pd.read_csv("data.csv")
 
 
-try:
-    es.indices.delete(index="embedding_v2")
-    print("Deleted older embedding index")
-except:
-    print("unable to delete older index")
-    
+#try:
+#    es.indices.delete(index="embedding_v2")
+#    print("Deleted older embedding index")
+#except:
+#    print("unable to delete older index")
+
+
 mapping = {
     "properties": 
         {
@@ -79,45 +81,18 @@ mapping = {
           },
 
         } 
-  }
+  }    
 # Create an index with the defined mapping
 
-es.indices.create(index='embedding_v2', body={'mappings': mapping}, ignore =400)
+#es.indices.create(index='embedding_v2', body={'mappings': mapping}, ignore =400)
 
 
-# Convert DataFrame to JSON
-# def dataframe_to_json(df):
-#     for index, row in df.iterrows():
-#         #print(row)
-#         yield {
-#             "_index": "embedding_v2",
-#             "_source": row.to_dict()
-#             }
-        
 
-# # Bulk insert into Elasticsearch
-# helpers.bulk(es, dataframe_to_json(df))
+#es.options(request_timeout=90).indices.create(index='embedding_v2', body={'mappings': mapping}, ignore =400)
 
-#print(f"Data inserted into Elasticsearch index '{index_name}'.")
 
-# Convert DataFrame rows to Elasticsearch documents
-# def generate_docs(dataframe):
-#     for _, row in dataframe.iterrows():
-#         yield {
-#             "_index": "embedding_v4",
-#             "_source": {
-#                 "content":row['content'],
-#                 "embedding":row['embedding'],
-#                 "filename":row['file_name'],
-#                 "package_name":row['package_name'],
-                
-#             }
-#         }
 
-# # Load data into Elasticsearch
-# bulk(es, generate_docs(df))
-
-# Function to fetch CSV from public S3 URL
+#time.sleep(20)
 
 INDEX_NAME = "embedding_v2"
 def get_csv_from_url(url):
@@ -130,20 +105,21 @@ def get_csv_from_url(url):
 
 # Function to add data row by row to Elasticsearch
 def add_row_to_elasticsearch(es_client, index_name, row):
-    try:
+	try:
         # Insert row into Elasticsearch
-        response = es_client.index(index=index_name, document=row)
-        print(f"Inserted document with ID: {response['_id']}")
-    except Exception as e:
+#        response = es_client.index(index=index_name, document=row)
+		response = es_client.options(request_timeout=30).index(index=index_name, document=row)
+		print(f"Inserted document with ID: {response['_id']}")
+	except Exception as e:
         # Raise an error if there's an issue
-        raise Exception(f"Failed to insert row: {row}. Error: {e}")
+		raise Exception(f"Failed to insert row: {row}. Error: {e}")
 
 # Process CSV and upload rows to Elasticsearch
 def process_csv_and_upload_to_elasticsearch(csv_content, es_client, index_name):
-    csv_reader = csv.DictReader(io.StringIO(csv_content))
-    for row in csv_reader:
-        row['embedding']= parse_vector(row['embedding'])
-        add_row_to_elasticsearch(es_client, index_name, row)
+	csv_reader = csv.DictReader(io.StringIO(csv_content))
+	for row in csv_reader:
+		row['embedding']= parse_vector(row['embedding'])
+		add_row_to_elasticsearch(es_client, index_name, row)
 
 
 # Function to parse and sanitize vectors
@@ -164,10 +140,9 @@ csv_content = get_csv_from_url(csv_url)
     
 # Process and upload data to Elasticsearch
 try:
-    process_csv_and_upload_to_elasticsearch(csv_content, es, INDEX_NAME)
-    print(f"All rows from the S3 file were successfully uploaded.")
+	process_csv_and_upload_to_elasticsearch(csv_content, es, INDEX_NAME)
+	print(f"All rows from the S3 file were successfully uploaded.")
 except Exception as e:
-    print(f"Error during upload: {e}")
-        
-        
+	print(f"Error during upload:{e}")
+
 print("Data loaded successfully.")

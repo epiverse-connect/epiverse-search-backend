@@ -1,0 +1,70 @@
+Creating network "epiverse-search-backend_default" with the default driver
+Building loader
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  103.4kB
+Step 1/8 : FROM python:3.11-slim
+ ---> acfa244d037c
+Step 2/8 : WORKDIR /app
+ ---> Using cache
+ ---> e942f6ee96c7
+Step 3/8 : COPY load_data.py .
+ ---> Using cache
+ ---> 0b01121b76da
+Step 4/8 : COPY /backend/requirements.txt .
+ ---> Using cache
+ ---> 0e3d0bd84e6e
+Step 5/8 : COPY /backend/search_api_endpoint.py .
+ ---> Using cache
+ ---> 2c21b87dc33d
+Step 6/8 : RUN pip install pandas elasticsearch requests
+ ---> Using cache
+ ---> e7200a08e51c
+Step 7/8 : RUN pip install -r requirements.txt
+ ---> Using cache
+ ---> f4bd5a5539eb
+Step 8/8 : CMD ["python3", "load_data.py"]
+ ---> Using cache
+ ---> e8f3a77ee13c
+Successfully built e8f3a77ee13c
+Successfully tagged epiverse-search-backend_loader:latest
+Building backend
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  104.4kB
+Step 1/8 : FROM python:3.11-slim
+ ---> acfa244d037c
+Step 2/8 : WORKDIR /app
+ ---> Using cache
+ ---> e942f6ee96c7
+Step 3/8 : COPY load_data.py .
+ ---> Using cache
+ ---> 0b01121b76da
+Step 4/8 : COPY /backend/requirements.txt .
+ ---> Using cache
+ ---> 0e3d0bd84e6e
+Step 5/8 : COPY /backend/search_api_endpoint.py .
+ ---> Using cache
+ ---> 2c21b87dc33d
+Step 6/8 : RUN pip install pandas elasticsearch requests
+ ---> Using cache
+ ---> e7200a08e51c
+Step 7/8 : RUN pip install -r requirements.txt
+ ---> Using cache
+ ---> f4bd5a5539eb
+Step 8/8 : CMD ["python3", "load_data.py"]
+ ---> Using cache
+ ---> e8f3a77ee13c
+Successfully built e8f3a77ee13c
+Successfully tagged pytorch/pytorch:latest
+Creating elasticsearch_demo_gambia ... 
+Creating elasticsearch_demo_gambia ... error
+
+ERROR: for elasticsearch_demo_gambia  Cannot create container for service elasticsearch: invalid IP address in add-host: "9200"
+
+ERROR: for elasticsearch  Cannot create container for service elasticsearch: invalid IP address in add-host: "9200"
+Encountered errors while bringing up the project.
