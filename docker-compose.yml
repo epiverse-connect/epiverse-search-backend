@@ -1,43 +1,14 @@
 version: '3.8'
 
 services:
-    elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
-        container_name: elasticsearch_demo_gambia
-        environment:
-            - discovery.type=single-node
-            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-            - xpack.security.enabled=false
-            - xpack.security.http.ssl.enabled=false
-#            - network.host=0.0.0.0
-#            - http.port=9200
-            - http.cors.enabled=true
-            - http.cors.allow-origin="*"
-#            - http.cors.allow-headers=Authorization,X-Requested-With,Content-Type,Content-Length
-#            - http.cors.allow-credentials=true
-#            - ELASTICSEARCH_HOST=http://0.0.0.0:9200
-#            - 
 
-        ports:
-            - "9200:9200"
-        volumes:
-            - es_data:/usr/share/elasticsearch/data
-        networks:
-            - elastic_v1
-
-    loader:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        container_name: loader
-        depends_on:
-            - elasticsearch
- #       environment:
- #           - ELASTICSEARCH_HOST=http://0.0.0.0:9200
- #       extra_hosts:
- #           - "host.docker.internal:9200"
-        networks:
-             - elastic_v1
+#    loader:
+#        build:
+#            context: .
+#            dockerfile: Dockerfile
+#        container_name: loader
+#        depends_on:
+#            - elasticsearch
 
 
     backend:
@@ -47,36 +18,14 @@ services:
           dockerfile: Dockerfile
 #          platforms: 
 #            - linux/arm64
-        container_name: fastapi
-        environment:
-            - discovery.type=single-node
-            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-            - xpack.security.enabled=false
-            - xpack.security.http.ssl.enabled=false
-#            - network.host=0.0.0.0
-#            - http.port=9200
-#            - http.cors.enabled=true
-#            - http.cors.allow-origin=*
-#            - http.cors.allow-headers=Authorization,X-Requested-With,Content-Type,Content-Length
-#            - http.cors.allow-credentials=true
-            - ELASTICSEARCH_HOST=elasticsearch
-
-        depends_on:
-            - elasticsearch
-        networks:
-            - elastic_v1
+        container_name: fastapi_cross_encoder_20250117
+#        depends_on:
+#            - elasticsearch
+        
         ports:
             - "8000:8000"
 #        extra_hosts:
 #            - "host.docker.internal:8000"
-        command: ["uvicorn", "search_api_endpoint:app", "--host", "0.0.0.0", "--port", "8000" ] #, "--reload"]
-    
-
-volumes:
-  es_data:
+        command: ["uvicorn", "search_api_endpoint:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 
-
-networks:
-  elastic_v1:
-    driver: bridge
