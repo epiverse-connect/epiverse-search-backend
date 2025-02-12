@@ -37,25 +37,31 @@ top_k = 32                          #Number of passages we want to retrieve with
 cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
 
 analysis_df_prev = pd.read_csv('analysis_df.csv')
-package_descr_df = pd.read_csv('pkg_metadata_api.csv')
-analysis_df = analysis_df_prev.merge(package_descr_df, left_on='package_name', right_on='package', how='left')
+#package_descr_df = pd.read_csv('pkg_metadata_api.csv')
+package_descr_df = pd.read_json("epipkgs_metadata.json",dtype =str)
+package_descr_df.columns = ['package','logo','website', 'source', 'articles']
+package_descr_df = package_descr_df.map(lambda x: str(x)[2:-2])
 
+
+analysis_df = analysis_df_prev.merge(package_descr_df, left_on='package_name', right_on='package', how='left')
 
 
 app = FastAPI(debug=True)
 
 origins = [
-    "http://localhost",
-    "http://localhost:8080",
-    "http://localhost:8000",
-]
+	"http://localhost",
+	"http://localhost:8080",
+	"http://localhost:8000",
+	"epiverse-connect.github.io"
+	]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+	)
 
 paragraphs = [str(s) for s in analysis_df['tokenized_content'].to_list()]
 # Smaller value: Context from other sentences might get lost
