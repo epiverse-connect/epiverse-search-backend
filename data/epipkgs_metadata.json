@@ -1,0 +1,765 @@
+[
+  {
+    "Package": ["cleanepi"],
+    "logo": ["https://github.com/epiverse-trace/cleanepi/raw/HEAD/man/figures/logo.svg"],
+    "website": ["https://epiverse-trace.github.io/cleanepi/"],
+    "source": ["https://github.com/epiverse-trace/cleanepi"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/cleanepi/cleanepi.html", "https://epiverse-connect.r-universe.dev/articles/cleanepi/design_principle.html"]
+  },
+  {
+    "Package": ["cholera"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/lindbrook/cholera"],
+    "articles": []
+  },
+  {
+    "Package": ["pomp"],
+    "logo": {},
+    "website": ["https://kingaa.github.io/pomp/"],
+    "source": ["https://github.com/kingaa/pomp"],
+    "articles": []
+  },
+  {
+    "Package": ["AMR"],
+    "logo": ["https://github.com/msberends/AMR/raw/HEAD/logo.svg"],
+    "website": ["https://msberends.github.io/AMR/"],
+    "source": ["https://github.com/msberends/AMR"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/AMR/AMR_for_Python.html", "https://epiverse-connect.r-universe.dev/articles/AMR/welcome_to_AMR.html"]
+  },
+  {
+    "Package": ["adegenet"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/thibautjombart/adegenet"],
+    "articles": []
+  },
+  {
+    "Package": ["EpiNow2"],
+    "logo": {},
+    "website": ["https://epiforecasts.io/EpiNow2/"],
+    "source": ["https://github.com/epiforecasts/EpiNow2"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/EpiNow2/case-studies.html", "https://epiverse-connect.r-universe.dev/articles/EpiNow2/estimate_infections_options.html", "https://epiverse-connect.r-universe.dev/articles/EpiNow2/gaussian_process_implementation_details.html", "https://epiverse-connect.r-universe.dev/articles/EpiNow2/EpiNow2.html", "https://epiverse-connect.r-universe.dev/articles/EpiNow2/estimate_infections.html", "https://epiverse-connect.r-universe.dev/articles/EpiNow2/estimate_secondary.html", "https://epiverse-connect.r-universe.dev/articles/EpiNow2/estimate_truncation.html", "https://epiverse-connect.r-universe.dev/articles/EpiNow2/epinow.html", "https://epiverse-connect.r-universe.dev/articles/EpiNow2/estimate_infections_workflow.html"]
+  },
+  {
+    "Package": ["cfr"],
+    "logo": ["https://github.com/epiverse-trace/cfr/raw/HEAD/man/figures/logo.svg"],
+    "website": ["https://epiverse-trace.github.io/cfr/"],
+    "source": ["https://github.com/epiverse-trace/cfr"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/cfr/delay_distributions.html", "https://epiverse-connect.r-universe.dev/articles/cfr/estimate_static_severity.html", "https://epiverse-connect.r-universe.dev/articles/cfr/cfr.html", "https://epiverse-connect.r-universe.dev/articles/cfr/estimate_from_individual_data.html", "https://epiverse-connect.r-universe.dev/articles/cfr/estimate_time_varying_severity.html", "https://epiverse-connect.r-universe.dev/articles/cfr/estimate_ascertainment.html", "https://epiverse-connect.r-universe.dev/articles/cfr/data_from_incidence2.html", "https://epiverse-connect.r-universe.dev/articles/cfr/software-permissions.html"]
+  },
+  {
+    "Package": ["sivirep"],
+    "logo": ["https://github.com/epiverse-trace/sivirep/raw/HEAD/man/figures/logo.svg"],
+    "website": ["https://epiverse-trace.github.io/sivirep/"],
+    "source": ["https://github.com/epiverse-trace/sivirep"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/sivirep/sivirep.html"]
+  },
+  {
+    "Package": ["epikit"],
+    "logo": {},
+    "website": ["https://r4epis.netlify.app"],
+    "source": ["https://github.com/R4EPI/epikit"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epikit/intro.html"]
+  },
+  {
+    "Package": ["epiparameterDB"],
+    "logo": ["https://github.com/epiverse-trace/epiparameterDB/raw/HEAD/man/figures/logo.svg"],
+    "website": [null],
+    "source": ["https://github.com/epiverse-trace/epiparameterDB"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epiparameterDB/database.html", "https://epiverse-connect.r-universe.dev/articles/epiparameterDB/design-principles.html"]
+  },
+  {
+    "Package": ["epichains"],
+    "logo": ["https://github.com/epiverse-trace/epichains/raw/HEAD/man/figures/logo.svg"],
+    "website": ["https://epiverse-trace.github.io/epichains/"],
+    "source": ["https://github.com/epiverse-trace/epichains"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epichains/design-principles.html", "https://epiverse-connect.r-universe.dev/articles/epichains/epichains.html", "https://epiverse-connect.r-universe.dev/articles/epichains/branching_process_literature.html", "https://epiverse-connect.r-universe.dev/articles/epichains/interventions.html", "https://epiverse-connect.r-universe.dev/articles/epichains/projecting_incidence.html", "https://epiverse-connect.r-universe.dev/articles/epichains/theoretical_background.html"]
+  },
+  {
+    "Package": ["popEpi"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/FinnishCancerRegistry/popEpi"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/popEpi/sir.html", "https://epiverse-connect.r-universe.dev/articles/popEpi/survtab_examples.html"]
+  },
+  {
+    "Package": ["epiR"],
+    "logo": ["https://github.com/mstevenson888/epiR/raw/HEAD/man/figures/logo.png"],
+    "website": [],
+    "source": ["https://github.com/mstevenson888/epiR"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epiR/epiR_descriptive.html", "https://epiverse-connect.r-universe.dev/articles/epiR/epiR_surveillance.html", "https://epiverse-connect.r-universe.dev/articles/epiR/epiR_measures_of_association.html", "https://epiverse-connect.r-universe.dev/articles/epiR/epiR_sample_size.html"]
+  },
+  {
+    "Package": ["SimInf"],
+    "logo": {},
+    "website": ["http://stewid.github.io/SimInf/"],
+    "source": ["https://github.com/stewid/SimInf"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/SimInf/post-process-data.html", "https://epiverse-connect.r-universe.dev/articles/SimInf/scheduled-events.html", "https://epiverse-connect.r-universe.dev/articles/SimInf/SimInf.pdf"]
+  },
+  {
+    "Package": ["epiworldR"],
+    "logo": {},
+    "website": ["https://uofuepibio.github.io/epiworldR/"],
+    "source": ["https://github.com/UofUEpiBio/epiworldR"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epiworldR/getting-started.html", "https://epiverse-connect.r-universe.dev/articles/epiworldR/implementation.html", "https://epiverse-connect.r-universe.dev/articles/epiworldR/likelihood-free-mcmc.html", "https://epiverse-connect.r-universe.dev/articles/epiworldR/mixing.html", "https://epiverse-connect.r-universe.dev/articles/epiworldR/run-multiple.html"]
+  },
+  {
+    "Package": ["EpiModel"],
+    "logo": {},
+    "website": ["https://www.epimodel.org/"],
+    "source": ["https://github.com/EpiModel/EpiModel"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/EpiModel/Intro.html", "https://epiverse-connect.r-universe.dev/articles/EpiModel/attributes-and-summary-statistics.html", "https://epiverse-connect.r-universe.dev/articles/EpiModel/model-parameters.html", "https://epiverse-connect.r-universe.dev/articles/EpiModel/network-objects.html"]
+  },
+  {
+    "Package": ["epiparameter"],
+    "logo": ["https://github.com/epiverse-trace/epiparameter/raw/HEAD/man/figures/logo.png"],
+    "website": ["https://epiverse-trace.github.io/epiparameter/"],
+    "source": ["https://github.com/epiverse-trace/epiparameter"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epiparameter/database.html", "https://epiverse-connect.r-universe.dev/articles/epiparameter/data_protocol.html", "https://epiverse-connect.r-universe.dev/articles/epiparameter/design_principles.html", "https://epiverse-connect.r-universe.dev/articles/epiparameter/epiparameter.html", "https://epiverse-connect.r-universe.dev/articles/epiparameter/extract_convert.html"]
+  },
+  {
+    "Package": ["epigrowthfit"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/davidearn/epigrowthfit"],
+    "articles": []
+  },
+  {
+    "Package": ["hmsidwR"],
+    "logo": ["https://github.com/Fgazzelloni/hmsidwR/raw/HEAD/man/figures/logo.png"],
+    "website": ["https://fgazzelloni.github.io/hmsidwR/"],
+    "source": ["https://github.com/Fgazzelloni/hmsidwR"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/hmsidwR/hmsidwR.html"]
+  },
+  {
+    "Package": ["epicontacts"],
+    "logo": {},
+    "website": ["https://www.repidemicsconsortium.org/epicontacts/"],
+    "source": ["https://github.com/reconhub/epicontacts"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epicontacts/epicontacts_class.html", "https://epiverse-connect.r-universe.dev/articles/epicontacts/epicontacts.html"]
+  },
+  {
+    "Package": ["nosoi"],
+    "logo": ["https://github.com/slequime/nosoi/raw/HEAD/man/figures/logo.png"],
+    "website": ["https://slequime.github.io/nosoi/"],
+    "source": ["https://github.com/slequime/nosoi"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/nosoi/nosoi.html", "https://epiverse-connect.r-universe.dev/articles/nosoi/output.html", "https://epiverse-connect.r-universe.dev/articles/nosoi/continuous.html", "https://epiverse-connect.r-universe.dev/articles/nosoi/discrete.html", "https://epiverse-connect.r-universe.dev/articles/nosoi/none.html"]
+  },
+  {
+    "Package": ["Epi"],
+    "logo": {},
+    "website": ["http://bendixcarstensen.com/Epi/"],
+    "source": ["https://github.com/cran/Epi"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/Epi/crisk.pdf", "https://epiverse-connect.r-universe.dev/articles/Epi/aaflup.pdf", "https://epiverse-connect.r-universe.dev/articles/Epi/simLexis.pdf", "https://epiverse-connect.r-universe.dev/articles/Epi/addLexis.pdf", "https://epiverse-connect.r-universe.dev/articles/Epi/yll.pdf"]
+  },
+  {
+    "Package": ["finalsize"],
+    "logo": ["https://github.com/epiverse-trace/finalsize/raw/HEAD/man/figures/logo.svg"],
+    "website": ["https://epiverse-trace.github.io/finalsize/"],
+    "source": ["https://github.com/epiverse-trace/finalsize"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/finalsize/finalsize.html", "https://epiverse-connect.r-universe.dev/articles/finalsize/compare_sir_model.html", "https://epiverse-connect.r-universe.dev/articles/finalsize/susceptibility_matrices.html", "https://epiverse-connect.r-universe.dev/articles/finalsize/varying_contacts.html", "https://epiverse-connect.r-universe.dev/articles/finalsize/varying_susceptibility.html", "https://epiverse-connect.r-universe.dev/articles/finalsize/uncertainty_params.html", "https://epiverse-connect.r-universe.dev/articles/finalsize/demographic_turnover.html", "https://epiverse-connect.r-universe.dev/articles/finalsize/theoretical_background.html"]
+  },
+  {
+    "Package": ["epiCo"],
+    "logo": ["https://github.com/epiverse-trace/epiCo/raw/HEAD/man/figures/logo.svg"],
+    "website": ["https://epiverse-trace.github.io/epiCo/"],
+    "source": ["https://github.com/epiverse-trace/epiCo"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epiCo/demographic_vignette.html", "https://epiverse-connect.r-universe.dev/articles/epiCo/endemic_channel.html", "https://epiverse-connect.r-universe.dev/articles/epiCo/spatiotemporal_vignette.html"]
+  },
+  {
+    "Package": ["nhanesA"],
+    "logo": {},
+    "website": ["https://cran.r-project.org/package=nhanesA"],
+    "source": ["https://github.com/cjendres1/nhanes"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/nhanesA/Introducing_nhanesA.html", "https://epiverse-connect.r-universe.dev/articles/nhanesA/UsingSurveyWeights.html"]
+  },
+  {
+    "Package": ["diyar"],
+    "logo": {},
+    "website": ["https://olisansonwu.github.io/diyar/index.html"],
+    "source": ["https://github.com/OlisaNsonwu/diyar"],
+    "articles": []
+  },
+  {
+    "Package": ["linelist"],
+    "logo": ["https://github.com/epiverse-trace/linelist/raw/HEAD/man/figures/logo.svg"],
+    "website": ["https://epiverse-trace.github.io/linelist/"],
+    "source": ["https://github.com/epiverse-trace/linelist"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/linelist/linelist.html", "https://epiverse-connect.r-universe.dev/articles/linelist/compat-dplyr.html", "https://epiverse-connect.r-universe.dev/articles/linelist/design-principles.html", "https://epiverse-connect.r-universe.dev/articles/linelist/software-permissions.html"]
+  },
+  {
+    "Package": ["vaccineff"],
+    "logo": ["https://github.com/epiverse-trace/vaccineff/raw/HEAD/man/figures/logo.png"],
+    "website": ["https://epiverse-trace.github.io/vaccineff/"],
+    "source": ["https://github.com/epiverse-trace/vaccineff"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/vaccineff/cohort_design.html", "https://epiverse-connect.r-universe.dev/articles/vaccineff/other_designs.html", "https://epiverse-connect.r-universe.dev/articles/vaccineff/vaccineff.html"]
+  },
+  {
+    "Package": ["contactdata"],
+    "logo": ["https://github.com/bisaloo/contactdata/raw/HEAD/man/figures/logo.svg"],
+    "website": ["https://hugogruson.fr/contactdata/"],
+    "source": ["https://github.com/bisaloo/contactdata"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/contactdata/countries.html", "https://epiverse-connect.r-universe.dev/articles/contactdata/visualise_age.html", "https://epiverse-connect.r-universe.dev/articles/contactdata/visualise_contact.html"]
+  },
+  {
+    "Package": ["COVID19"],
+    "logo": ["https://github.com/covid19datahub/COVID19/raw/HEAD/man/figures/logo.png"],
+    "website": ["https://covid19datahub.io"],
+    "source": ["https://github.com/covid19datahub/COVID19"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/COVID19/contributors.html", "https://epiverse-connect.r-universe.dev/articles/COVID19/docs.html", "https://epiverse-connect.r-universe.dev/articles/COVID19/data.html", "https://epiverse-connect.r-universe.dev/articles/COVID19/python.html", "https://epiverse-connect.r-universe.dev/articles/COVID19/r.html"]
+  },
+  {
+    "Package": ["socialmixr"],
+    "logo": {},
+    "website": ["https://epiforecasts.io/socialmixr/"],
+    "source": ["https://github.com/epiforecasts/socialmixr"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/socialmixr/socialmixr.html"]
+  },
+  {
+    "Package": ["mstate"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/hputter/mstate"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/mstate/Tutorial.pdf", "https://epiverse-connect.r-universe.dev/articles/mstate/visuals_demo.html"]
+  },
+  {
+    "Package": ["incidence2"],
+    "logo": {},
+    "website": ["https://www.reconverse.org/incidence2/"],
+    "source": ["https://github.com/reconverse/incidence2"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/incidence2/incidence2.html"]
+  },
+  {
+    "Package": ["epidatr"],
+    "logo": {},
+    "website": ["https://cmu-delphi.github.io/epidatr/"],
+    "source": ["https://github.com/cmu-delphi/epidatr"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epidatr/signal-discovery.html", "https://epiverse-connect.r-universe.dev/articles/epidatr/epidatr.html", "https://epiverse-connect.r-universe.dev/articles/epidatr/versioned-data.html"]
+  },
+  {
+    "Package": ["EpiDynamics"],
+    "logo": {},
+    "website": [],
+    "source": {},
+    "articles": []
+  },
+  {
+    "Package": ["delphidocs"],
+    "logo": {},
+    "website": ["https://cmu-delphi.github.io/delphidocs"],
+    "source": ["https://github.com/cmu-delphi/delphidocs"],
+    "articles": []
+  },
+  {
+    "Package": ["surveillance"],
+    "logo": {},
+    "website": ["https://surveillance.R-Forge.R-project.org/"],
+    "source": ["https://github.com/cran/surveillance"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/surveillance/glrnb.pdf", "https://epiverse-connect.r-universe.dev/articles/surveillance/surveillance.pdf", "https://epiverse-connect.r-universe.dev/articles/surveillance/hhh4_spacetime.pdf", "https://epiverse-connect.r-universe.dev/articles/surveillance/hhh4.pdf", "https://epiverse-connect.r-universe.dev/articles/surveillance/monitoringCounts.pdf", "https://epiverse-connect.r-universe.dev/articles/surveillance/twinSIR.pdf", "https://epiverse-connect.r-universe.dev/articles/surveillance/twinstim.pdf"]
+  },
+  {
+    "Package": ["denguedatahub"],
+    "logo": {},
+    "website": ["https://denguedatahub.netlify.app/"],
+    "source": ["https://github.com/thiyangt/denguedatahub"],
+    "articles": []
+  },
+  {
+    "Package": ["EpiContactTrace"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/stewid/EpiContactTrace"],
+    "articles": []
+  },
+  {
+    "Package": ["outbreaker2"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/reconhub/outbreaker2"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/outbreaker2/introduction.html", "https://epiverse-connect.r-universe.dev/articles/outbreaker2/overview.html", "https://epiverse-connect.r-universe.dev/articles/outbreaker2/Rcpp_API.html", "https://epiverse-connect.r-universe.dev/articles/outbreaker2/customisation.html"]
+  },
+  {
+    "Package": ["dde"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/mrc-ide/dde"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/dde/dde.html"]
+  },
+  {
+    "Package": ["EpiEstim"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/mrc-ide/EpiEstim"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/EpiEstim/alternative_software.html", "https://epiverse-connect.r-universe.dev/articles/EpiEstim/EpiEstim_backimputation.html", "https://epiverse-connect.r-universe.dev/articles/EpiEstim/short_demo.html", "https://epiverse-connect.r-universe.dev/articles/EpiEstim/EpiEstim_aggregated_data.html", "https://epiverse-connect.r-universe.dev/articles/EpiEstim/full_EpiEstim_vignette.html", "https://epiverse-connect.r-universe.dev/articles/EpiEstim/MV_EpiEstim_vignette.html"]
+  },
+  {
+    "Package": ["epidm"],
+    "logo": {},
+    "website": ["https://alexbhatt.github.io/epidm/"],
+    "source": ["https://github.com/alexbhatt/epidm"],
+    "articles": []
+  },
+  {
+    "Package": ["incidence"],
+    "logo": {},
+    "website": ["https://www.repidemicsconsortium.org/incidence/"],
+    "source": ["https://github.com/reconhub/incidence"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/incidence/conversions.html", "https://epiverse-connect.r-universe.dev/articles/incidence/customize_plot.html", "https://epiverse-connect.r-universe.dev/articles/incidence/incidence_class.html", "https://epiverse-connect.r-universe.dev/articles/incidence/incidence_fit_class.html", "https://epiverse-connect.r-universe.dev/articles/incidence/overview.html"]
+  },
+  {
+    "Package": ["excessmort"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/rafalab/excessmort"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/excessmort/excessmort.html"]
+  },
+  {
+    "Package": ["malariaAtlas"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/malaria-atlas-project/malariaAtlas"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/malariaAtlas/overview.html"]
+  },
+  {
+    "Package": ["dbparser"],
+    "logo": ["https://github.com/ropensci/dbparser/raw/HEAD/man/figures/logo.png"],
+    "website": ["https://docs.ropensci.org/dbparser/"],
+    "source": ["https://github.com/ropensci/dbparser"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/dbparser/dbparser.html"]
+  },
+  {
+    "Package": ["odin"],
+    "logo": ["https://github.com/mrc-ide/odin/raw/HEAD/man/figures/logo.png"],
+    "website": [null],
+    "source": ["https://github.com/mrc-ide/odin"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/odin/debugging.html", "https://epiverse-connect.r-universe.dev/articles/odin/guide.html", "https://epiverse-connect.r-universe.dev/articles/odin/odin.html", "https://epiverse-connect.r-universe.dev/articles/odin/discrete.html", "https://epiverse-connect.r-universe.dev/articles/odin/functions.html"]
+  },
+  {
+    "Package": ["Bernadette"],
+    "logo": {},
+    "website": [],
+    "source": {},
+    "articles": []
+  },
+  {
+    "Package": ["o2geosocial"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/alxsrobert/o2geosocial"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/o2geosocial/o2geosocial.html"]
+  },
+  {
+    "Package": ["shinySIR"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/SineadMorris/shinySIR"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/shinySIR/Vignette.html"]
+  },
+  {
+    "Package": ["epiworldRShiny"],
+    "logo": {},
+    "website": ["https://uofuepibio.github.io/epiworldRShiny/"],
+    "source": ["https://github.com/UofUEpiBio/epiworldRShiny"],
+    "articles": []
+  },
+  {
+    "Package": ["cmprsk"],
+    "logo": {},
+    "website": ["https://www.R-project.org"],
+    "source": ["https://github.com/cran/cmprsk"],
+    "articles": []
+  },
+  {
+    "Package": ["covid19dbcand"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/MohammedFCIS/covid19dbcand"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/covid19dbcand/covid19dbcand.html"]
+  },
+  {
+    "Package": ["episensr"],
+    "logo": ["https://github.com/dhaine/episensr/raw/HEAD/man/figures/logo.png"],
+    "website": ["https://dhaine.github.io/episensr/"],
+    "source": ["https://github.com/dhaine/episensr"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/episensr/d_other_sens.html", "https://epiverse-connect.r-universe.dev/articles/episensr/c_multiple_bias.html", "https://epiverse-connect.r-universe.dev/articles/episensr/b_probabilistic.html", "https://epiverse-connect.r-universe.dev/articles/episensr/episensr.html"]
+  },
+  {
+    "Package": ["EpiForsk"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/Laksafoss/EpiForsk"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/EpiForsk/Contributing.html", "https://epiverse-connect.r-universe.dev/articles/EpiForsk/andh_forest_plot.html", "https://epiverse-connect.r-universe.dev/articles/EpiForsk/Writing_functions.html"]
+  },
+  {
+    "Package": ["nbTransmission"],
+    "logo": {},
+    "website": ["https://sarahleavitt.github.io/nbTransmission/"],
+    "source": ["https://github.com/sarahleavitt/nbTransmission"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/nbTransmission/nbTransmission-vignette.html"]
+  },
+  {
+    "Package": ["DSAIDE"],
+    "logo": ["https://github.com/ahgroup/DSAIDE/raw/HEAD/man/figures/logo.png"],
+    "website": ["https://ahgroup.github.io/DSAIDE/"],
+    "source": ["https://github.com/ahgroup/DSAIDE"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/DSAIDE/DSAIDE.html"]
+  },
+  {
+    "Package": ["epinet"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/epinet"],
+    "articles": []
+  },
+  {
+    "Package": ["deSolve"],
+    "logo": {},
+    "website": ["http://desolve.r-forge.r-project.org/"],
+    "source": ["https://github.com/cran/deSolve"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/deSolve/deSolve.pdf", "https://epiverse-connect.r-universe.dev/articles/deSolve/compiledCode.pdf"]
+  },
+  {
+    "Package": ["epiphy"],
+    "logo": ["https://github.com/chgigot/epiphy/raw/HEAD/man/figures/logo.png"],
+    "website": ["https://chgigot.github.io/epiphy/"],
+    "source": ["https://github.com/chgigot/epiphy"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epiphy/epiphy.html", "https://epiverse-connect.r-universe.dev/articles/epiphy/defs-and-eqns.html"]
+  },
+  {
+    "Package": ["epitweetr"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/EU-ECDC/epitweetr"],
+    "articles": []
+  },
+  {
+    "Package": ["EpiStats"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/EpiStats"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/EpiStats/EpiStats.html"]
+  },
+  {
+    "Package": ["epiCleanr"],
+    "logo": ["https://github.com/truenomad/epiCleanr/raw/HEAD/man/figures/logo.png"],
+    "website": ["https://truenomad.github.io/epiCleanr/"],
+    "source": ["https://github.com/truenomad/epiCleanr"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epiCleanr/using_epicleanr.html"]
+  },
+  {
+    "Package": ["covid19br"],
+    "logo": {},
+    "website": ["https://fndemarqui.github.io/covid19br/"],
+    "source": ["https://github.com/fndemarqui/covid19br"],
+    "articles": []
+  },
+  {
+    "Package": ["TransPhylo"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/xavierdidelot/TransPhylo"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/TransPhylo/infer.html", "https://epiverse-connect.r-universe.dev/articles/TransPhylo/TransPhylo.html", "https://epiverse-connect.r-universe.dev/articles/TransPhylo/simulate.html", "https://epiverse-connect.r-universe.dev/articles/TransPhylo/multitree.html"]
+  },
+  {
+    "Package": ["epiflows"],
+    "logo": {},
+    "website": ["https://www.repidemicsconsortium.org/epiflows/"],
+    "source": ["https://github.com/reconhub/epiflows"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epiflows/introduction.html", "https://epiverse-connect.r-universe.dev/articles/epiflows/epiflows-class.html"]
+  },
+  {
+    "Package": ["R0"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/tobadia/R0"],
+    "articles": []
+  },
+  {
+    "Package": ["modelSSE"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/modelSSE"],
+    "articles": []
+  },
+  {
+    "Package": ["apisensr"],
+    "logo": ["https://github.com/dhaine/apisensr/raw/HEAD/man/figures/logo.png"],
+    "website": [null],
+    "source": ["https://github.com/dhaine/apisensr"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/apisensr/apisensr.html"]
+  },
+  {
+    "Package": ["coarseDataTools"],
+    "logo": {},
+    "website": ["https://cran.r-project.org/package=coarseDataTools"],
+    "source": ["https://github.com/nickreich/coarseDataTools"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/coarseDataTools/CFR_vignette.html"]
+  },
+  {
+    "Package": ["mem"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/lozalojo/mem"],
+    "articles": []
+  },
+  {
+    "Package": ["memapp"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/lozalojo/memapp"],
+    "articles": []
+  },
+  {
+    "Package": ["argo"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/argo"],
+    "articles": []
+  },
+  {
+    "Package": ["trending"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/reconverse/trending"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/trending/Introduction.html", "https://epiverse-connect.r-universe.dev/articles/trending/prediction_intervals.html"]
+  },
+  {
+    "Package": ["covid19sf"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/RamiKrispin/covid19sf"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/covid19sf/data_refresh.html", "https://epiverse-connect.r-universe.dev/articles/covid19sf/intro.html"]
+  },
+  {
+    "Package": ["covid19italy"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/RamiKrispin/covid19italy"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/covid19italy/dashboard.html", "https://epiverse-connect.r-universe.dev/articles/covid19italy/intro.html"]
+  },
+  {
+    "Package": ["epicasting"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/epicasting"],
+    "articles": []
+  },
+  {
+    "Package": ["coronavirus"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/RamiKrispin/coronavirus"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/coronavirus/covid19R.html"]
+  },
+  {
+    "Package": ["SpatialEpi"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/rudeboybert/SpatialEpi"],
+    "articles": []
+  },
+  {
+    "Package": ["epimdr2"],
+    "logo": {},
+    "website": ["<https://github.com/objornstad/epimdr2>"],
+    "source": ["https://github.com/objornstad/epimdr2"],
+    "articles": []
+  },
+  {
+    "Package": ["riskCommunicator"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/jgrembi/riskCommunicator"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/riskCommunicator/Vignette_newbieRusers.html", "https://epiverse-connect.r-universe.dev/articles/riskCommunicator/Vignette_manuscript.html"]
+  },
+  {
+    "Package": ["epitrix"],
+    "logo": {},
+    "website": ["http://www.repidemicsconsortium.org/epitrix/"],
+    "source": ["https://github.com/reconhub/epitrix"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epitrix/estimate_incubation.html", "https://epiverse-connect.r-universe.dev/articles/epitrix/epitrix.html"]
+  },
+  {
+    "Package": ["trendeval"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/reconverse/trendeval"],
+    "articles": []
+  },
+  {
+    "Package": ["outbreaks"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/reconhub/outbreaks"],
+    "articles": []
+  },
+  {
+    "Package": ["covid19.analytics"],
+    "logo": {},
+    "website": ["https://mponce0.github.io/covid19.analytics/"],
+    "source": ["https://github.com/mponce0/covid19.analytics"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/covid19.analytics/covid19.analytics.html"]
+  },
+  {
+    "Package": ["covid19us"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/aedobbyn/covid19us"],
+    "articles": []
+  },
+  {
+    "Package": ["epiDisplay"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/epiDisplay"],
+    "articles": []
+  },
+  {
+    "Package": ["etm"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/mclements/etm"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/etm/etmCIF_tutorial.pdf"]
+  },
+  {
+    "Package": ["EpiCurve"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/IamKDO/EpiCurve"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/EpiCurve/EpiCurve.html"]
+  },
+  {
+    "Package": ["inctools"],
+    "logo": {},
+    "website": ["https://github.sacema.org/inctools/index.html"],
+    "source": ["https://github.com/SACEMA/inctools"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/inctools/EstimatingIncidence.html", "https://epiverse-connect.r-universe.dev/articles/inctools/Introduction.html", "https://epiverse-connect.r-universe.dev/articles/inctools/SurveyDesign.html", "https://epiverse-connect.r-universe.dev/articles/inctools/TestCalibration.html"]
+  },
+  {
+    "Package": ["powerSurvEpi"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/powerSurvEpi"],
+    "articles": []
+  },
+  {
+    "Package": ["EpiReport"],
+    "logo": {},
+    "website": ["https://www.ecdc.europa.eu/en/annual-epidemiological-reports"],
+    "source": ["https://github.com/EU-ECDC/EpiReport"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/EpiReport/EpiReport_Vignette.html"]
+  },
+  {
+    "Package": ["covid19swiss"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/Covid19R/covid19swiss"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/covid19swiss/intro_covid19swiss.html", "https://epiverse-connect.r-universe.dev/articles/covid19swiss/update_the_data.html"]
+  },
+  {
+    "Package": ["earlyR"],
+    "logo": {},
+    "website": ["https://www.repidemicsconsortium.org/earlyR/"],
+    "source": ["https://github.com/reconhub/earlyR"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/earlyR/earlyR.html"]
+  },
+  {
+    "Package": ["EpiILM"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/waleedalmutiry/EpiILM"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/EpiILM/Predict.pdf"]
+  },
+  {
+    "Package": ["corona"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/corona"],
+    "articles": []
+  },
+  {
+    "Package": ["CovidMutations"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/MSQ-123/CovidMutations"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/CovidMutations/vignette.html"]
+  },
+  {
+    "Package": ["RSurveillance"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/roStats/RSurveillance"],
+    "articles": []
+  },
+  {
+    "Package": ["bets.covid19"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/qingyuanzhao/bets.covid19"],
+    "articles": []
+  },
+  {
+    "Package": ["covid19france"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/Covid19R/covid19france"],
+    "articles": []
+  },
+  {
+    "Package": ["epitools"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/epitools"],
+    "articles": []
+  },
+  {
+    "Package": ["EpiILMCT"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/waleedalmutiry/EpiILMCT"],
+    "articles": []
+  },
+  {
+    "Package": ["tsiR"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/adbecker/tsiR"],
+    "articles": []
+  },
+  {
+    "Package": ["endtoend"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/endtoend"],
+    "articles": []
+  },
+  {
+    "Package": ["colmozzie"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/thiyangt/colmozzie"],
+    "articles": []
+  },
+  {
+    "Package": ["epibasix"],
+    "logo": {},
+    "website": [],
+    "source": ["https://github.com/cran/epibasix"],
+    "articles": []
+  },
+  {
+    "Package": ["EpiSignalDetection"],
+    "logo": {},
+    "website": ["http://atlas.ecdc.europa.eu/public/index.aspx"],
+    "source": ["https://github.com/EU-ECDC/EpiSignalDetection"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/EpiSignalDetection/EpiSignalDetection_Vignette.html"]
+  },
+  {
+    "Package": ["epitab"],
+    "logo": {},
+    "website": [null],
+    "source": ["https://github.com/stulacy/epitab"],
+    "articles": ["https://epiverse-connect.r-universe.dev/articles/epitab/user_guide.html"]
+  }
+]
