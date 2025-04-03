@@ -2,13 +2,13 @@ import torch
 from sentence_transformers import SentenceTransformer, CrossEncoder, util
 import pandas as pd
 from utils import get_value
-
+import logging
 
 
 # --- Logging Configuration ---
 log_file_path = "search_engine.log"  # Define the log file path
 # Create a rotating file handler
-log_handler = RotatingFileHandler(
+log_handler = logging.handlers.RotatingFileHandler(
     log_file_path, maxBytes=10 * 1024 * 1024, backupCount=5)  # 10MB max, 5 backups)
 # Create a formatter
 log_formatter = logging.Formatter(
