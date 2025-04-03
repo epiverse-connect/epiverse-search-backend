@@ -1,0 +1,146 @@
+---
+title: "Calculating the final size of an epidemic"
+output:
+  bookdown::html_vignette2:
+    fig_caption: yes
+    code_folding: show
+pkgdown:
+  as_is: true
+bibliography: references.json
+link-citations: true
+vignette: >
+  %\VignetteIndexEntry{Calculating the final size of an epidemic}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+When analysing an epidemic-prone infection, such as pandemic influenza, it is important to understand how many infections there could be in total. The overall number of infections that occur during such an epidemic, is called the 'final epidemic size'.
+The expected final size of an epidemic can be calculated using methods detailed in @andreasen2011, @miller2012, @kucharski2014, and @bidari2016, and which are implemented in the _finalsize_ package.
+
+An advantage of the final size approach is that it is only necessary to define pathogen transmissibility and population susceptibility to calculate the epidemic size, rather than requiring estimates of additional time-dependent processes like the duration of infectiousness or delay from infection to onset of symptoms. So _finalsize_ will be particularly relevant for questions where understanding the overall size of an epidemic is more important than estimating its shape.
+
+::: {.alert .alert-primary}
+## Use case {-}
+
+An epidemic is underway. We want to know **how many individuals we would expect to be infected in total** for a given level of transmission and population susceptibility: this is the cumulative sum of all infections, or the _final size_ of the epidemic.
+:::
+
+::: {.alert .alert-secondary}
+### What we have {-}
+
+  1. An estimate of the infection's basic reproduction number $R_0$;
+  2. An estimate of the population size;
+  3. An estimate of the susceptibility of the population to the infection.
+
+### What we assume {-}
+
+  1. That the infection dynamics can be captured using a Susceptible-Infectious-Recovered (SIR) or Susceptible-Exposed-Infectious-Recovered (SEIR) model, where individuals who have been infected acquire immunity against subsequent infection, at least for the remaining duration of the epidemic.
+:::
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE,
+  dpi = 300
+)
+```
+
+```{r}
+# load finalsize
+library(finalsize)
+```
+
+## Defining a value for $R_0$
+
+A number of statistical methods can be used to estimate the $R_0$ of an epidemic in its early stages from available data. These are not discussed here, but some examples are given in the [_episoap_ package](https://epiverse-trace.github.io/episoap/articles/episoap.html).
+
+Instead, this example considers a infection with an $R_0$ of 1.5, similar to that which could potentially be observed for pandemic influenza.
+
+```{r}
+# define r0 as 1.5
+r0 <- 1.5
+```
+
+## Getting population estimates
+
+Population estimates at the country scale are relatively easy to get from trusted data aggregators such as [Our World in Data](https://ourworldindata.org/world-population-growth).
+More detailed breakdowns of population estimates at the sub-national scale may be available from their respective national governments.
+Here, we use an estimate for the U.K. population size of about 67 million.
+
+```{r}
+# get UK population size
+uk_pop <- 67 * 1e6
+```
+
+This initial example assumes uniform mixing, i.e., that all individuals in the population have a similar number of social contacts. This can be modelled in the form of a single-element contact matrix, which must be divided by the population size.
+
+```{r}
+# prepare contact matrix
+contact_matrix <- matrix(1.0) / uk_pop
+```
+
+::: {.alert .alert-secondary}
+Social contacts are well known to be non-uniform, with age being a strong influence on how many contacts a person has and, moreover, on the ages of their contacts. A relatively simple example is that of children of school-going age, who typically have more social contacts than the elderly, and most of whose social contacts are with other schoolchildren.
+
+The ["Modelling heterogeneous contacts"](varying_contacts.html) vignette explores how this can be incorporated into final epidemic size calculations using _finalsize_.
+:::
+
+## Modelling population susceptibility
+
+In this initial example, the population is assumed to be fully susceptible to infection. This is modelled in the form of a matrix with a single element, called `susceptibility`.
+
+```{r}
+# all individuals are fully susceptible
+susceptibility <- matrix(1.0)
+```
+
+Since all individuals are fully susceptible, the break-up of the population into susceptibility groups can be represented as another single-element matrix, called `p_susceptibility`.
+
+```{r}
+# all individuals are in the single, high-susceptibility group
+p_susceptibility <- matrix(1.0)
+```
+
+::: {.alert .alert-secondary}
+Susceptibility to infection is well known to vary due to a number of factors, including age, prior exposure to the pathogen, or immunisation due to a vaccination campaign.
+
+The ["Modelling heterogeneous susceptibility"](varying_susceptibility.html) vignette explores how variation in susceptibility within and between demographic groups can be incorporated into final epidemic size calculations using _finalsize_.
+:::
+
+## Running `final_size`
+
+The final size of the epidemic in the population can then be calculated using the only function in the package, `final_size()`. This example allows the function to fall back on the default options for the arguments `solver` (`"iterative"`) and `control` (an empty list).
+
+```{r}
+# calculate final size
+final_size_data <- final_size(
+  r0 = r0,
+  contact_matrix = contact_matrix,
+  demography_vector = uk_pop,
+  susceptibility = susceptibility,
+  p_susceptibility = p_susceptibility
+)
+
+# view the output data frame
+final_size_data
+```
+
+This is the final epidemic size -- in proportional as well as absolute terms -- without accounting for heterogeneity in social contacts by age or other factors, and without accounting for variation in susceptibility to infection between or within demographic groups.
+
+This value, of about `r scales::percent(round(final_size_data$p_infected, 2))` of the population or about `r scales::comma(final_size_data$n_infected, scale = 1e-6, suffix = " million")` people, is the expected proportion and number of individuals that would be infected over the course of this epidemic.
+
+## A short-cut for homogeneous populations
+
+The example above explains the steps that go into final size calculation.
+For one very specific use-case, wherein the population is assumed to have homogeneous mixing (i.e., groups do not differ in their social contacts), and homogeneous and full susceptibility to infection, the final size calculation only depends on the $R_0$ of the epidemic.
+
+In this case, the final size calculation can be simplified to `final_size(r0)`, with all other parameters taking their default values, which assume homogeneous social contacts and susceptibility.
+
+```{r}
+final_size(r0)
+```
+
+
+## References

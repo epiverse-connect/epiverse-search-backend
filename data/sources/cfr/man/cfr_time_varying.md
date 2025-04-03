@@ -1,0 +1,85 @@
+# Estimate a severity measure that varies over time
+
+```r
+cfr_time_varying(
+  data,
+  delay_density = NULL,
+  burn_in = 7,
+  smoothing_window = NULL
+)
+```
+
+## Arguments
+
+- `data`: A `<data.frame>` containing the outbreak data. A daily time series with dates or some other absolute indicator of time (e.g. epiday or epiweek) and the numbers of new cases and new deaths at each time point. Note that the required columns are "date" (for the date), "cases" (for the number of reported cases), and "deaths" (for the number of reported deaths) on each day of the outbreak.
+    
+    Note that the `<data.frame>` is required to have an unbroken sequence of dates with no missing dates in between. The "date" column must be of class `Date` (see `as.Date()`).
+    
+    Note also that the total number of cases must be greater than the total number of reported deaths.
+- `delay_density`: An optional argument that controls whether delay correction is applied in the severity estimation. May be `NULL`, for no delay correction, or a function that returns the density function of a distribution to evaluate density at user-specified values, e.g. `function(x) stats::dgamma(x = x, shape = 5, scale = 1)`.
+- `burn_in`: A single integer-like value for the number of time-points (typically days) to disregard at the start of the time-series, if a burn-in period is desired.
+    
+    Defaults to 7, which is a sensible default value that disregards the first week of cases and deaths, assuming daily data.
+    
+    To consider all case data including the start of the time-series, set this argument to 0.
+- `smoothing_window`: An **odd** number determining the smoothing window size to use when smoothing the case and death time-series, using a rolling median procedure (as the `k` argument to `stats::runmed()`) before calculating the time-varying severity.
+    
+    The default behaviour is to apply no smoothing. The minimum value of this argument is 1.
+
+## Returns
+
+A `<data.frame>` with the date, maximum likelihood estimate and 95% confidence interval of the daily severity estimates, named "severity_estimate", "severity_low", and "severity_high", with one row for each day in the original data.frame.
+
+Calculates how the severity of a disease changes over time while optionally correcting for reporting delays using an epidemiological delay distribution of the time between symptom onset and outcome (e.g. onset-to-death for the fatality risk).
+
+## Details: Adjusting for delays between two time series
+
+This function estimates the number of cases which have a known outcome over time, following Nishiura et al. (2009). The function calculates a quantity `k_t` for each day within the input data, which represents the number of cases estimated to have a known outcome, on day `t`. `k_t` is calculated in the following way: `k_t = \sum_{j = 0}^t c_t f_{j - t}`
+
+We then assume that the severity measure, for example CFR, of interest is binomially distributed, in the following way:
+
+`d_t \sim {\sf Binomial}(k_t, \theta_t)`
+
+We use maximum likelihood estimation to determine the value of `\theta_t`
+
+for each `t`, where `\theta` represents the severity measure of interest.
+
+The epidemiological delay distribution passed to `delay_density` is used to obtain a probability mass function parameterised by time; i.e. `f(t)`
+
+which gives the probability of the binary outcome of a case (survival or death) being known by time `t`. The delay distribution is parameterised with disease-specific parameters before it is supplied here.
+
+Note that the function arguments `burn_in` and `smoothing_window` are not explicitly used in this calculation. `burn_in` controls how many estimates at the beginning of the outbreak are replaced with `NA`s --- the calculation above is not applied to the first `burn_in` data points. The calculation is applied to the smoothed data, if a `smoothing_window`
+
+is specified.
+
+## Examples
+
+```r
+# get data pre-loaded with the package
+data("covid_data")
+df_covid_uk <- covid_data[covid_data$country == "United Kingdom" &
+covid_data$date <= as.Date("2020-09-01"), ]
+
+# estimate time varying severity without correcting for delays
+cfr_time_varying <- cfr_time_varying(
+  data = df_covid_uk,
+  burn_in = 7L
+)
+# View
+tail(cfr_time_varying)
+
+# estimate time varying severity while correcting for delays
+# obtain onset-to-death delay distribution parameters from Linton et al. 2020
+# J. Clinical Medicine: <https://doi.org/10.3390/jcm9020538>
+# view only the first values
+cfr_time_varying <- cfr_time_varying(
+  data = df_covid_uk,
+  delay_density = function(x) dlnorm(x, meanlog = 2.577, sdlog = 0.440),
+  burn_in = 7L
+)
+tail(cfr_time_varying)
+```
+
+## References
+
+Nishiura, H., Klinkenberg, D., Roberts, M., & Heesterbeek, J. A. P. (2009). Early Epidemiological Assessment of the Virulence of Emerging Infectious Diseases: A Case Study of an Influenza Pandemic. PLOS ONE, 4(8), e6852. tools:::Rd_expr_doi("10.1371/journal.pone.0006852")

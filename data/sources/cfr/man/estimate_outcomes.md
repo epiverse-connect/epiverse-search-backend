@@ -1,0 +1,44 @@
+# Estimate known outcomes of cases using a delay distribution
+
+```r
+estimate_outcomes(data, delay_density)
+```
+
+## Arguments
+
+- `data`: A `<data.frame>` containing the outbreak data. A daily time series with dates or some other absolute indicator of time (e.g. epiday or epiweek) and the numbers of new cases and new deaths at each time point. Note that the required columns are "date" (for the date), "cases" (for the number of reported cases), and "deaths" (for the number of reported deaths) on each day of the outbreak.
+    
+    Note that the `<data.frame>` is required to have an unbroken sequence of dates with no missing dates in between. The "date" column must be of class `Date` (see `as.Date()`).
+    
+    Note also that the total number of cases must be greater than the total number of reported deaths.
+- `delay_density`: An optional argument that controls whether delay correction is applied in the severity estimation. May be `NULL`, for no delay correction, or a function that returns the density function of a distribution to evaluate density at user-specified values, e.g. `function(x) stats::dgamma(x = x, shape = 5, scale = 1)`.
+
+## Returns
+
+A `<data.frame>` with the columns in `data`, and with two additional columns:
+
+ * `"estimated_outcomes"` for the number of cases with an outcome of interest (usually, death) estimated to be known on the dates specified in `data`, and
+ * `u_t` for the ratio of cumulative number of estimated known outcomes and the cumulative number of cases reported until each date specified in `data`.
+
+Estimates the expected number of individuals with known outcomes from a case and outcome time series of outbreak data, and an epidemiological delay distribution of symptom onset to outcome. When calculating a case fatality risk, the outcomes must be deaths, the delay distribution must be an onset-to-death distribution, and the function returns estimates of the known death outcomes.
+
+## Details
+
+The ratio `u_t` represents, for the outbreak, the overall proportion of cases whose outcomes are expected to be known by each day $i$. For an ongoing outbreak with relatively long delays between symptom onset and case outcome, a `u_t` value of 1.0 may indicate that the outbreak has ended, as the outcomes of all cases are expected to be known.
+
+## Examples
+
+```r
+# Load Ebola 1976 outbreak data
+data("ebola1976")
+
+# estimate severity for each day while correcting for delays
+# obtain onset-to-death delay distribution parameters from Barry et al. 2018
+# examine the first few rows of the output
+estimated_outcomes <- estimate_outcomes(
+  data = ebola1976,
+  delay_density = function(x) dgamma(x, shape = 2.40, scale = 3.33)
+)
+
+head(estimated_outcomes)
+```

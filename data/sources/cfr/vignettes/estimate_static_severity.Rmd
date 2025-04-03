@@ -1,0 +1,226 @@
+---
+title: "Calculating a static, delay-adjusted estimate of disease severity"
+output:
+  bookdown::html_vignette2:
+    fig_caption: yes
+    code_folding: show
+bibliography: resources/library.json
+link-citations: true
+vignette: >
+  %\VignetteIndexEntry{Calculating a static, delay-adjusted estimate of disease severity}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  dpi = 300,
+  fig.width = 5, fig.height = 3
+)
+```
+
+Understanding disease severity, and especially the case fatality risk (CFR), is key to outbreak response.
+During an outbreak there is often a delay between cases being reported, and the outcomes (for CFR, deaths) of those cases being known, and accounting for these leads to better estimates of CFR.
+`cfr_static()` can be used to calculate a static estimate of the severity of an outbreak using methods from @nishiura2009 while accounting for the distribution of reporting delays.
+
+::: {.alert .alert-warning}
+New to calculating disease severity using _cfr_? You might want to see the ["Get started" vignette first](cfr.html).
+:::
+
+::: {.alert .alert-primary}
+## Use case {-}
+
+We want a **static estimate of the severity of an outbreak** in the form of the case fatality risk (CFR) while correcting for the delay in reporting the outcomes of cases.
+:::
+
+::: {.alert .alert-secondary}
+### What we have {-}
+
+* A time-series of cases and deaths, (cases may be substituted by another indicator of infections over time);
+* Data on the distribution of delays, describing the probability an individual will die $t$ days after they were initially infected.
+:::
+
+First load _cfr_ and packages to access and plot data.
+
+```{r, message = FALSE, warning=FALSE, eval = TRUE}
+library(cfr)
+
+# packages to wrangle and plot data
+library(dplyr)
+```
+
+## Severity of the 1976 Ebola Outbreak
+
+This example data comes from the 1976 Ebola virus disease (EVD, or Ebola) outbreak in the Democratic Republic of the Congo [@camacho2014].
+
+We focus on the roughly the first half of this dataset, by subsetting the data so that we only include days before 30th September, 1976.
+
+```{r message = FALSE, warning = FALSE, eval = TRUE}
+data("ebola1976")
+
+# view the first few rows
+head(ebola1976)
+
+df_ebola_subset <- filter(ebola1976, date <= "1976-09-30")
+```
+
+### Onset-to-death delay distribution
+
+We retrieve the parameters of the distribution of durations (also called delays) between the onset of EVD symptoms and death from the literature [@barry2018].
+This is a Gamma distribution with shape $k$ = 2.40 and scale $\theta$ = 3.33.
+
+::: {.alert .alert-warning}
+**Note that** while we shall use a continuous distribution here, it is more appropriate to use a discrete distribution instead as we are working with daily data.
+See the [vignette on delay distributions](delay_distributions.html) for more on when using a continuous instead of discrete distribution is acceptable, and on using discrete distributions with _cfr_.
+
+**Note also** that we use the central estimates for each distribution parameter, and by ignoring uncertainty in these parameters the uncertainty in the resulting CFR is likely to be underestimated. 
+:::
+
+### Intermediate step: Estimating cases with known outcomes
+
+The function `estimate_outcomes()` estimates the number of cases whose outcomes are expected to be known by each day $i$ of an outbreak, given a time-series of case onsets and the distribution of delays between symptom onset and case outcome.
+In the context of CFR estimation, the delay distribution is usually an 'onset-to-death' distribution.
+
+The resulting data frame contains two new columns, "estimated_outcomes", for the number of cases whose outcomes are expected to be known on each day, and "u_t" for the ratio of cumulative number of cases estimated to have known outcomes and the cumulative number of cases reported until each date specified in data.
+
+```{r}
+# calculate known death outcomes
+df_estimated_outcomes_ebola <- estimate_outcomes(
+  data = df_ebola_subset,
+  delay_density = function(x) dgamma(x, shape = 2.40, scale = 3.33)
+)
+
+# print head of data frame
+head(df_estimated_outcomes_ebola)
+
+# print tail of data frame
+tail(df_estimated_outcomes_ebola)
+```
+
+The estimated outcomes are lower than the number of cases at the beginning of an outbreak as the case outcomes are only likely to become known some days later; this also means that `u_t` is likely to be lower than 1.0 early in the outbreak.
+The `u_t` for an outbreak that has ended will be much closer to 1.0, as the outcomes of all reported cases are expected to be known (depending on the quality of outbreak monitoring).
+This depends on the distribution of delays between onset and outcome, and the ratio `u_t` will 'catch up' to 1.0 faster when the onset-to-outcome delay is short.
+
+::: {.alert .alert-warning}
+**Note that** the period between onset and death may be shorter than the period between onset and full recovery, and should not be considered equivalent.
+For CFR estimation, we are primarily interested in the former as the goal is estimating severity in the form of a fatality risk (or ratio for past outbreaks).
+
+**Note that** `estimate_outcomes()` is exported but is primarily intended for internal use.
+:::
+
+### Estimating the naive and corrected CFR
+
+The function `cfr_static()` wraps the internal function `estimate_outcomes()` to provide a static CFR by automatically correcting for reporting delays if a delay density function is provided.
+
+```{r message = FALSE, warning = FALSE, eval = TRUE}
+# calculating the naive CFR
+cfr_static(
+  data = df_ebola_subset
+)
+
+# calculating the corrected CFR
+cfr_static(
+  df_ebola_subset,
+  delay_density = function(x) dgamma(x, shape = 2.40, scale = 3.33)
+)
+```
+
+::: {.alert .alert-info}
+
+## Severity estimation methods
+
+`cfr_static()` automatically chooses a method of calculating the severity estimate, based on whether delay correction is applied, and further when delay correction is applied, depending on the total number of cases and an initial rough estimate of the severity.
+
+  - **Naive estimate**: When delay correction is not applied, the CFR is the ratio of total deaths to total cases, and the confidence interval is given by a Binomial test using `stats::binom.test()` where total deaths are successes, total cases are trials, and the hypothesised success is 1.0
+
+  - **Delay correction, small outbreaks**: For outbreaks where the total cases are below the user-specified 'Poisson threshold' (`poisson_threshold`, default = 100), the CFR and uncertainty around it is taken from a profile likelihood generated from a Binomial model of deaths (successes) and estimated known outcomes (trials).
+
+  - **Delay correction, large outbreaks with low severity**: For outbreaks with total cases greater than the Poisson threshold (default = 100) and with initial severity estimates < 0.05, the CFR and uncertainty are taken from a Poisson approximation of the Binomial profile likelihood (taking $\lambda$ = $np$ for $n$ estimated outcomes and $p$ as the severity estimate).
+
+  - **Delay correction, large outbreaks with higher severity**: For outbreaks with total cases greater than the Poisson threshold (default = 100) and with initial severity estimates $\geq$ 0.05, the CFR and uncertainty are taken from a Normal approximation of the Binomial profile likelihood.
+
+:::
+
+## Severity of the COVID-19 pandemic in the U.K.
+
+This example shows static severity estimation using _cfr_ and data from the Covid-19 pandemic in the United Kingdom.
+
+We load example Covid-19 daily case and death data provided with the _cfr_ package as `covid_data`, and subset for the first year of U.K. data.
+
+```{r}
+# get Covid data loaded with the package
+data("covid_data")
+
+# filter for the U.K
+df_covid_uk <- filter(
+  covid_data,
+  country == "United Kingdom", date <= "2020-12-31"
+)
+
+# View the first few rows and recall necessary columns: date, cases, deaths
+head(df_covid_uk)
+```
+
+### Onset-to-death distribution for Covid-19
+
+We retrieve the appropriate distribution for Covid-19 from @linton2020; this is a lognormal distribution with $\mu$ = 2.577 and $\sigma$ = 0.440.
+
+::: {.alert .alert-warning}
+**Note that** @linton2020 fitted a discrete lognormal distribution and we use a continuous distribution, and that we are ignoring uncertainty in the distribution parameters and hence likely under-estimating uncertainty in the CFR.
+:::
+
+### Estimating the naive and corrected CFR
+
+Finally, we calculate the naive and corrected CFRs for the Covid-19 pandemic in the U.K.
+
+```{r message = FALSE, warning = FALSE, eval = TRUE}
+# calculating the naive CFR
+cfr_static(
+  df_covid_uk
+)
+
+# calculating the corrected CFR
+cfr_static(
+  df_covid_uk,
+  delay_density = function(x) dlnorm(x, meanlog = 2.577, sdlog = 0.440)
+)
+```
+
+---
+
+## Details: Adjusting for delays between two time series
+
+`cfr_static()` follows @nishiura2009 to calculate a quantity $u_t$ for each day within the input data which represents the proportion of cases with a known adverse outcome (usually death) on day $t$.
+
+$$
+  u_t = \dfrac{\sum_{i = 0}^t
+        \sum_{j = 0}^\infty c_{i - j} f_{j}}{\sum_{i = 0} c_i},
+$$
+
+where $f_t$ is the value of the probability mass function at time $t$, and $c_t$, $d_t$ are the number of new cases and new deaths at time $t$ (respectively).
+We then use $u_t$ in the following likelihood function to estimate severity.
+
+$$
+  {\sf L}(\theta | C_{t},D_{t},u_{t}) = \log{\dbinom{u_{t}C_{t}}{D_{t}}} + D_{t} \log{\theta} +
+  (u_{t}C_{t} - D_{t})\log{(1 - \theta)},
+$$
+
+$C_{t}$ and $D_{t}$ are the cumulative number of cases and deaths (respectively) until time $t$.
+
+Lastly $\theta$ (severity) is estimated $\theta$ using simple maximum-likelihood methods, allowing the functions within this package to be quick and easy tools to use.
+
+The precise severity measure — CFR, IFR, HFR, etc — that $\theta$ represents depends upon the input data given by the user.
+
+ - Case fatality risk (CFR) requires case and death incidence data, with a case-to-death delay distribution (or close approximation, such as symptom onset-to-death).
+
+ - Infection fatality risk (IFR) requires infection and death incidence data, with an exposure-to-death delay distribution (or close approximation).
+
+ - Hospitalisation Fatality Risk (HFR) requires hospitalisation and death incidence data, and the appropriate delay distribution (or close approximation).
+
+---
+
+## References

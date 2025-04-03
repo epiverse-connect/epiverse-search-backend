@@ -1,0 +1,38 @@
+# Checks whether the order in a sequence of date events is chronological. order.
+
+```r
+check_date_sequence(data, target_columns)
+```
+
+## Arguments
+
+- `data`: The input `<data.frame>` or `<linelist>`
+- `target_columns`: A `<vector>` of column names for events. Users should specify at least 2 column names in the expected order. For example: `target_columns = c("date_symptoms_onset", "date_hospitalization","date_death")`. When the input data is a `<linelist>` object, this parameter can be set to `linelist_tags` to apply the date sequence checking exclusively to the tagged columns. The date values in the target columns should be in the ISO8601 format, e.g., 2024-12-31. Otherwise, use the `standardize_dates()` function to standardize the target columns.
+
+## Returns
+
+The input dataset. When found, the incorrect date sequences will be stored in the report and can be accessed using `attr(data, "report")`.
+
+Checks whether a date sequence in a vector of specified columns is in chronological order or not.
+
+## Examples
+
+```r
+# import the data
+data <- readRDS(system.file("extdata", "test_df.RDS", package = "cleanepi"))
+
+# standardize the date values
+data <- data %>%
+  standardize_dates(
+    target_columns  = c("date_first_pcr_positive_test", "date.of.admission"),
+    error_tolerance = 0.4,
+    format = NULL,
+    timeframe = NULL
+  )
+
+# check the date sequence in two columns
+good_date_sequence <- check_date_sequence(
+  data = data,
+  target_columns = c("date_first_pcr_positive_test", "date.of.admission")
+)
+```
