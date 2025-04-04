@@ -4,24 +4,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from models import UserQuery, SearchResponse
 from search_engine import SemanticSearchEngine
 import json
-import logging
+import logging.config
+from logging.handlers import RotatingFileHandler
+import yaml
+
 
 # --- Logging Configuration ---
-log_file_path = "query_and_response.log"  # Define the log file path
-# Create a rotating file handler
-log_handler = logging.handlers.RotatingFileHandler(
-    log_file_path, maxBytes=10 * 1024 * 1024, backupCount=5)  # 10MB max, 5 backups)
-# Create a formatter
-log_formatter = logging.Formatter(
-    "%(asctime)s - %(levelname)s - %(message)s")
-# Set the formatter for the handler
-log_handler.setFormatter(log_formatter)
-# Get the root logger
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)  # Set the logging level for the logger
-# Add the handler to the logger
-logger.addHandler(log_handler)
+with open('logging_config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
 
+logging.config.dictConfig(config)
+logger = logging.getLogger(__name__)
 
 
 app = FastAPI(debug=True)
