@@ -8,6 +8,7 @@ WORKDIR /app
 #COPY /backend/requirements.txt .
 #COPY /backend/search_api_endpoint.py .
 COPY ./app/ .
+COPY logging_config.yaml .
 
 RUN pip install pandas requests
 RUN pip install -r requirements.txt
