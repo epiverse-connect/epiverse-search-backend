@@ -5,7 +5,7 @@ import json
 import os
 import logging
 
-def main(mytimer: func.TimerRequest, universe="epiverse-connect"):
+def main(mytimer: func.TimerRequest):
     """
     Fetch metadata about packages from an R-universe repository.
 
@@ -23,12 +23,14 @@ def main(mytimer: func.TimerRequest, universe="epiverse-connect"):
             - List of article URLs
     """
 
+    # Get environment variable
     connection_str = os.getenv("AzureWebJobsStorage")
-    connection_string = os.getenv("AzureWebJobsStorage")
-    if connection_string:
-        logging.INFO(f"AzureWebJobsStorage: {connection_string}")
-    else:
-        logging.ERROR("AzureWebJobsStorage is not set!")
+
+    if not connection_str:
+        logging.error("AzureWebJobsStorage environment variable is not set or empty!")
+        raise ValueError("AzureWebJobsStorage is required but not provided.")
+
+    logging.info(f"Using AzureWebJobsStorage: {connection_str}")
     
     blob_service_client = BlobServiceClient.from_connection_string(connection_str)
     container_name = "metadata"
@@ -42,7 +44,7 @@ def main(mytimer: func.TimerRequest, universe="epiverse-connect"):
         pass  # It's okay if it already exists
 
 
-    # universe = "epiverse-connect"
+    universe = "epiverse-connect"
     url = f"https://{universe}.r-universe.dev/api/packages"
     headers = {"User-Agent": "epiverse-connect metadata collection script"}
 
