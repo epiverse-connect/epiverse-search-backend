@@ -1,22 +1,18 @@
 import torch
 from sentence_transformers import SentenceTransformer, CrossEncoder, util
 import pandas as pd
+from logging.handlers import RotatingFileHandler
+import logging.config
+import logging
+import yaml 
+import os 
 
 # --- Logging Configuration ---
-log_file_path = "search_engine.log"  # Define the log file path
-# Create a rotating file handler
-log_handler = RotatingFileHandler(
-    log_file_path, maxBytes=10 * 1024 * 1024, backupCount=5)  # 10MB max, 5 backups)
-# Create a formatter
-log_formatter = logging.Formatter(
-    "%(asctime)s - %(levelname)s - %(message)s")
-# Set the formatter for the handler
-log_handler.setFormatter(log_formatter)
-# Get the root logger
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)  # Set the logging level for the logger
-# Add the handler to the logger
-logger.addHandler(log_handler)
+log_config_path = os.path.join(os.path.dirname(__file__), "logging_config.yaml")
+with open(log_config_path, "r") as file:
+    config = yaml.safe_load(file)
+    logging.config.dictConfig(config)
+logger = logging.getLogger(__name__)
 
 
 
@@ -48,16 +44,28 @@ class SemanticSearchEngine:
     def search(self, query: str, top_k: int = 32, num_results: int = 5):
         question_embedding = self.bi_encoder.encode(query, convert_to_tensor=True).to(self.device)
         hits = util.semantic_search(question_embedding, self.corpus_embeddings, top_k=top_k)[0]
-
-        cross_inp = [[query, self.passages[hit['corpus_id']]] for hit in hits]
-        cross_scores = self.cross_encoder.predict(cross_inp)
-
+        print(hits)
+        try:
+            cross_inp = [[query, self.passages[hit['corpus_id']]] for hit in hits]
+            cross_scores = self.cross_encoder.predict(cross_inp)
+        except IndexError as e:
+            logger.error(f"IndexError while creating cross inputs: {e}")
+            return []
+        
         for idx in range(len(cross_scores)):
             hits[idx]['cross-score'] = cross_scores[idx]
 
         hits = sorted(hits, key=lambda x: x['cross-score'], reverse=True)
 
         hits_df = pd.DataFrame(hits).head(20)
+        print(hits_df)
+
+        try:
+            hits_df = pd.DataFrame(hits).head(20)
+        except ValueError as e:
+            logger.error(f"ValueError while creating hits DataFrame: {e}")
+            return []
+        
 
         merged_df = pd.merge(hits_df, self.analysis_df, left_on='corpus_id', right_on='cluster_id', how='left')
         merged_df = merged_df.drop_duplicates(subset=['package_name'], keep='first')
