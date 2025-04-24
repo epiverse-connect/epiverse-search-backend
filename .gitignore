@@ -3,3 +3,11 @@ __pycache__/
 *.pyc
 .env
 metadata.json
+
+
+# Azurite database files
+__azurite_db*
+__azurite_db_*
+__azurite_db_blob__*
+__azurite_db_queue__*
+__azurite_db_table__*

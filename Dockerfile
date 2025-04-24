@@ -1,5 +1,8 @@
 FROM python:3.11-slim
 
+
+COPY . .
+
 WORKDIR /app
 
 #COPY pkg_metadata_api.csv .
@@ -7,7 +10,7 @@ WORKDIR /app
 #COPY corpus_embeddings.pth .
 #COPY /backend/requirements.txt .
 #COPY /backend/search_api_endpoint.py .
-COPY ./app/ .
+
 
 RUN pip install pandas requests
 RUN pip install -r requirements.txt
