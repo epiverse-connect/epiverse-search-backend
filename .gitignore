@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 .env
 metadata.json
+data/analysis_df.csv
