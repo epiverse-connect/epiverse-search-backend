@@ -1,6 +1,7 @@
 name: Check Embeddings
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'jobs/calculate-embeddings/**'
