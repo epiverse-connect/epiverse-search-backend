@@ -23,6 +23,7 @@ jobs:
       - uses: r-lib/actions/setup-renv@v2
         with:
           working-directory: jobs/calculate-embeddings
-      - run: python save_embeddings_locally.py
+      # We run the script on epiverse-trace to go faster
+      - run: python save_embeddings_locally.py epiverse-trace
       - run: pip install pytest
       - run: python pytest tests/test_embeddings_output.py
