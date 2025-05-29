@@ -6,6 +6,7 @@ from app.utils import load_data_from_blob
 import json
 import logging
 import os
+from app.settings import settings
 
 
 # --- Logging Configuration ---
@@ -24,20 +25,13 @@ logger.setLevel(logging.INFO)  # Set the logging level for the logger
 # Add the handler to the logger
 logger.addHandler(log_handler)
 
+# --- FastAPI Application Setup ---
 
-
-app = FastAPI(debug=True)
-
-origins = [
-    "http://localhost",
-    "http://localhost:8080",
-    "http://localhost:8000",
-    "epiverse-connect.github.io"
-]
+app = FastAPI(debug=settings.DEBUG)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
