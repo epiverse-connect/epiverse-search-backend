@@ -1,11 +1,13 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.routing import APIRouter
 from app.models import SearchResponse
 from app.search_engine import SemanticSearchEngine
 from app.utils import load_data_from_blob
 import json
 import logging
 import os
+from app.settings import settings
 
 
 # --- Logging Configuration ---
@@ -24,20 +26,15 @@ logger.setLevel(logging.INFO)  # Set the logging level for the logger
 # Add the handler to the logger
 logger.addHandler(log_handler)
 
+# --- FastAPI Application Setup ---
+router = APIRouter()
 
+app = FastAPI(debug=settings.DEBUG)
 
-app = FastAPI(debug=True)
-
-origins = [
-    "http://localhost",
-    "http://localhost:8080",
-    "http://localhost:8000",
-    "epiverse-connect.github.io"
-]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -82,7 +79,7 @@ async def initialize_search_engine():
         raise RuntimeError("Search engine initialization failed") from e
 
 
-@app.get("/api/", response_model=SearchResponse)
+@router.get("/api/", response_model=SearchResponse)
 def get_data(query: str = Query(..., description="User query string")):
 
     logger.info("Input question:{query}") 
@@ -96,6 +93,9 @@ def get_data(query: str = Query(..., description="User query string")):
     }
     logger.info(f"Response: {json.dumps(json_response, indent=2)}")
     return json_response
+
+
+app.include_router(router,prefix="/episearch")
 
 if __name__ == "__main__":
     import uvicorn
