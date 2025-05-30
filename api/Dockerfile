@@ -12,7 +12,7 @@ COPY ./app ./app
 EXPOSE 8000
 ENV env=production
 ENV USE_AZURE_STORAGE=true
-
+ENV AZURE_STORAGE_ACCOUNT_NAME=
 #
 # RUN pip install -r requirements.txt
 # Command to run the FastAPI app using Uvicorn
