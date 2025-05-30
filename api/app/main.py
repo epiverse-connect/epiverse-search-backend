@@ -8,8 +8,8 @@ import json
 import logging
 import os
 from app.settings import settings
-
-
+ 
+ 
 # --- Logging Configuration ---
 log_file_path = "query_and_response.log"  # Define the log file path
 # Create a rotating file handler
@@ -25,13 +25,20 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)  # Set the logging level for the logger
 # Add the handler to the logger
 logger.addHandler(log_handler)
-
+ 
 # --- FastAPI Application Setup ---
-router = APIRouter()
-
-app = FastAPI(debug=settings.DEBUG)
-
-
+router = APIRouter(
+    prefix="/episearch/api",
+    tags=["search"]
+)
+ 
+app = FastAPI(
+    debug=settings.DEBUG,
+    title="Epiverse Search",
+    docs_url="/episearch/api/docs",
+    openapi_url="/episearch/api/openapi.json"
+)
+ 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ORIGINS,
@@ -39,12 +46,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-
+ 
+ 
+ 
 # Global variable for search engine
 search_engine = None
-
+ 
 # Initialize search engine during app startup
 @app.on_event("startup")
 async def initialize_search_engine():
@@ -53,7 +60,7 @@ async def initialize_search_engine():
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         data_dir = os.path.join(base_dir, "data")
         use_azure_storage = os.getenv("USE_AZURE_STORAGE", "false").lower() == "true"
-
+ 
         if use_azure_storage:
             logger.info("Loading data from Azure Blob Storage...")
             # TODO: pass the container name and blob name as environment variables
@@ -66,7 +73,7 @@ async def initialize_search_engine():
             corpus_embeddings_path = os.path.join(data_dir, "corpus_embeddings.pth")
             analysis_df_path = os.path.join(data_dir, "analysis_df.csv")
             package_descr_path = os.path.join(data_dir, "epipkgs_metadata.json")
-
+ 
         search_engine = SemanticSearchEngine(
             corpus_embeddings_path=corpus_embeddings_path,
             analysis_df_path=analysis_df_path,
@@ -77,12 +84,12 @@ async def initialize_search_engine():
     except Exception as e:
         logger.error(f"Failed to initialize SemanticSearchEngine: {e}")
         raise RuntimeError("Search engine initialization failed") from e
-
-
-@router.get("/api/", response_model=SearchResponse)
+ 
+ 
+@router.get("/search", response_model=SearchResponse)
 def get_data(query: str = Query(..., description="User query string")):
-
-    logger.info("Input question:{query}") 
+ 
+    logger.info("Input question:{query}")
     results = search_engine.search(query)
     json_response = {
         "query": query,
@@ -93,10 +100,10 @@ def get_data(query: str = Query(..., description="User query string")):
     }
     logger.info(f"Response: {json.dumps(json_response, indent=2)}")
     return json_response
-
-
-app.include_router(router,prefix="/episearch")
-
+ 
+ 
+app.include_router(router)
+ 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
