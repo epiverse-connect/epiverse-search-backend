@@ -4,19 +4,11 @@ from fetch_universe_metadata import fetch_universe_metadata
 import json
 import logging
 import os
+from .utils import get_blob_service_client
 
 def main(mytimer: func.TimerRequest):
 
-    # Get environment variable
-    connection_str = os.getenv("AzureWebJobsStorage")
-
-    if not connection_str:
-        logging.error("AzureWebJobsStorage environment variable is not set or empty!")
-        raise ValueError("AzureWebJobsStorage is required but not provided.")
-
-    logging.info(f"Using AzureWebJobsStorage: {connection_str}")
-
-    blob_service_client = BlobServiceClient.from_connection_string(connection_str)
+    blob_service_client = get_blob_service_client()
     container_name = "data"
     blob_name = "epipkgs_metadata.json"
 

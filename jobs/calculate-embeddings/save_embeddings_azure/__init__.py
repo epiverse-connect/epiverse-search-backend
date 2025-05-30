@@ -5,19 +5,13 @@ import torch
 from calculate_embeddings import fetch_docs_and_embed
 import azure.functions as func
 from azure.storage.blob import BlobServiceClient
+from .utils import get_blob_service_client
 
 # --- Main Execution ---
 def main(mytimer: func.TimerRequest) -> None:
-    # Get environment variable
-    connection_str = os.getenv("AzureWebJobsStorage")
 
-    if not connection_str:
-        logging.error("AzureWebJobsStorage environment variable is not set or empty!")
-        raise ValueError("AzureWebJobsStorage is required but not provided.")
+    blob_service_client = get_blob_service_client()
 
-    logging.info(f"Using AzureWebJobsStorage: {connection_str}")
-
-    blob_service_client = BlobServiceClient.from_connection_string(connection_str)
     container_name = "data"
     blob_csv = "analysis_df.csv"
     blob_pth = "corpus_embeddings.pth"
