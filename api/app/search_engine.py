@@ -2,6 +2,7 @@ import torch
 from sentence_transformers import SentenceTransformer, CrossEncoder, util
 import pandas as pd
 import logging
+import os
 
 # --- Logging Configuration ---
 log_file_path = "search_engine.log"  # Define the log file path
@@ -45,7 +46,7 @@ class SemanticSearchEngine:
             passages.append(";".join(self.paragraphs[start_idx:end_idx]))
         return passages
 
-    def search(self, query: str, top_k: int = 32, num_results: int = 5):
+    def search(self, query: str, top_k: int = int(os.getenv("PRE_SELECTION_SIZE", "32")), num_results: int = 5):
         question_embedding = self.bi_encoder.encode(query, convert_to_tensor=True).to(self.device)
         hits = util.semantic_search(question_embedding, self.corpus_embeddings, top_k=top_k)[0]
 
