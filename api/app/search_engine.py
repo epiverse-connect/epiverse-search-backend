@@ -58,7 +58,7 @@ class SemanticSearchEngine:
 
         hits = sorted(hits, key=lambda x: x['cross-score'], reverse=True)
 
-        hits_df = pd.DataFrame(hits).head(20)
+        hits_df = pd.DataFrame(hits)
 
         merged_df = pd.merge(hits_df, self.analysis_df, left_on='corpus_id', right_on='cluster_id', how='left')
         merged_df = merged_df.drop_duplicates(subset=['package_name'], keep='first')
@@ -73,5 +73,7 @@ class SemanticSearchEngine:
         # Sort by relevance and Remove duplicates
         results_df = merged_renamed.sort_values(by='relevance', ascending=False).drop_duplicates(subset=['package_name'], keep='first')
         results_df = results_df.fillna('')
+
+        results_df = results_df.head(num_results)
 
         return results_df.to_dict('records')
