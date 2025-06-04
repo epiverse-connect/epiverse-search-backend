@@ -2,7 +2,9 @@ import pandas as pd
 import logging.config
 import yaml
 import os
+from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
+from azure.core.exceptions import AzureError
 import tempfile
 
 def setup_logging(default_path='logging_config.yaml', default_level=logging.INFO):
@@ -29,6 +31,37 @@ def get_value(df: pd.DataFrame, column: str, condition: pd.Series):
     except IndexError:
         return None
     
+def get_blob_service_client():
+    # Check for required environment variables for shared key
+    env = os.getenv("env")
+
+    if env == "local":
+        # Use Shared Key credential
+        connection_str=os.getenv("AzureWebJobsStorage")
+        if not connection_str:
+            logging.error("AzureWebJobsStorage environment variable is not set or empty!")
+            raise ValueError("AzureWebJobsStorage is required but not provided.")
+        return BlobServiceClient.from_connection_string(connection_str)
+
+    else:
+        # Use DefaultAzureCredential
+
+        account_name = os.getenv("AZURE_STORAGE_ACCOUNT_NAME")
+
+        if account_name:
+            account_url = f"https://{account_name}.blob.core.windows.net"
+
+        else:
+            raise ValueError("AZURE_STORAGE_ACCOUNT_NAME is required.")
+
+        logging.info("Trying DefaultAzureCredential")
+        try: 
+            credential = DefaultAzureCredential()
+            return BlobServiceClient(account_url=account_url, account_name=account_name, credential=credential)
+
+        except AzureError as e:
+            logging.error(f"Failed to authenticate with DefaultAzureCredential: {e}")
+            raise
 
 
 def load_data_from_blob(container_name: str, blob_name: str, file_type: str):
@@ -38,16 +71,8 @@ def load_data_from_blob(container_name: str, blob_name: str, file_type: str):
     Returns:
         torch.Tensor: The loaded embeddings.
     """
-       # Get environment variable
-    connection_str = os.getenv("AzureWebJobsStorage")
-
-    if not connection_str:
-        logging.error("AzureWebJobsStorage environment variable is not set or empty!")
-        raise ValueError("AzureWebJobsStorage is required but not provided.")
-
-    logging.info(f"Using AzureWebJobsStorage: {connection_str}")
     
-    blob_service_client = BlobServiceClient.from_connection_string(connection_str)
+    blob_service_client = get_blob_service_client()
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
 
     # Temporary file path
