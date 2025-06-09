@@ -9,10 +9,11 @@ import torch
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from nltk import sent_tokenize
-from azure.storage.blob import BlobServiceClient
 import subprocess
 import tempfile
 import glob
+
+from utils import get_blob_service_client
 
 # 1) Configure logging to stdout (Container Apps captures stdout automatically) —
 logging.basicConfig(
@@ -213,16 +214,9 @@ def main():
     start_time = time.time()
     logging.info("=== Starting calculate-embeddings job ===")
 
-    # 4.1) Read Azure Web Jobs Storage connection string
-    conn_str = os.getenv("AzureWebJobsStorage")
-    if not conn_str:
-        logging.error("AzureWebJobsStorage env var is missing—cannot connect to Blob Storage.")
-        sys.exit(1)
-    logging.info(f"Using AzureWebJobsStorage: {conn_str[:30]}…")
-
     # 4.2) Instantiate BlobServiceClient and container + blob names
     try:
-        blob_service_client = BlobServiceClient.from_connection_string(conn_str)
+        blob_service_client = get_blob_service_client()
     except Exception as e:
         logging.error(f"Failed to create BlobServiceClient: {e}", exc_info=True)
         sys.exit(2)
@@ -275,8 +269,8 @@ def main():
         buffer = io.BytesIO()
         torch.save(corpus_embeddings, buffer)
         buffer.seek(0)
-        blob_pt_client = container_client.get_blob_client(blob_pt_name)
-        blob_pt_client.upload_blob(buffer, overwrite=True)
+        blob_pth_client = container_client.get_blob_client(blob_pt_name)
+        blob_pth_client.upload_blob(buffer, overwrite=True)
         logging.info(f"Uploaded corpus_embeddings to '{container_name}/{blob_pt_name}'")
     except Exception as e:
         logging.error(f"Failed to upload corpus_embeddings .pth: {e}", exc_info=True)

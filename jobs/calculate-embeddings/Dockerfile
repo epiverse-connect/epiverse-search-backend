@@ -35,11 +35,18 @@ COPY requirements.txt .
 # Add dependencies for sentence-transformers, torch, huggingface, etc., if not in requirements.txt:
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN python -m nltk.downloader punkt_tab
+
 # 6) Copy in your helper modules, logging config, and the main runner
-COPY logging_config.yaml .
+# COPY logging_config.yaml .
 # optional: keep your helper separate, if you want
+COPY utils.py ./utils.py
 COPY calculate_embeddings.py ./calculate_embeddings.py   
 COPY run_calculate_embeddings.py ./run_calculate_embeddings.py
+
+# 7) Environment variables
+ENV env=production
+ENV AZURE_STORAGE_ACCOUNT_NAME=
 
 # 7) Ensure run_calculate_embeddings is executable (not strictly needed, but good practice)
 RUN chmod +x ./run_calculate_embeddings.py
