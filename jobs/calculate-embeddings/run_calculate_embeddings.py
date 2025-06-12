@@ -210,6 +210,30 @@ def encode_embeddings(passages: list[str],
     return corpus_embeddings
 
 # 4) Put it all together in a main() that also does Blob upload
+def fetch_docs_and_embed(universe: str = "epiverse-connect"):
+    start_time = time.time()
+
+    logging.info("--- Fetching the documentation files ---")
+    get_universe_docs(universe, SOURCE_FOLDER)
+
+    logging.info("--- Starting the document processing pipeline ---")
+    file_data = read_md_files_from_subfolders(SOURCE_FOLDER)
+
+    logging.info("--- Creating Document List and Tokenizing Content ---")
+    doc_list = create_document_list(file_data)
+
+    analysis_df = create_analysis_dataframe(doc_list, WINDOW_SIZE)
+
+    passages = create_passages(analysis_df)
+
+    corpus_embeddings = encode_embeddings(passages, BI_ENCODER_MODEL, MAX_SEQ_LENGTH, DEVICE)
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"--- Finished processing in {total_time:.2f} seconds ---")
+
+    return analysis_df, corpus_embeddings
+
 def main():
     start_time = time.time()
     logging.info("=== Starting calculate-embeddings job ===")
@@ -235,21 +259,8 @@ def main():
 
     # 4.4) Fetch docs, tokenize, embed
     try:
-        logging.info("--- Fetching universe docs via R → SOURCE_FOLDER ---")
-        get_universe_docs("epiverse-connect", SOURCE_FOLDER)
-
-        logging.info("--- Reading & preprocessing markdown files ---")
-        file_data = read_md_files_from_subfolders(SOURCE_FOLDER)
-
-        logging.info("--- Creating & tokenizing document list ---")
-        doc_list = create_document_list(file_data)
-
-        analysis_df = create_analysis_dataframe(doc_list, WINDOW_SIZE)
-
-        passages = create_passages(analysis_df)
-
-        logging.info("--- Encoding embeddings with SentenceTransformer ---")
-        corpus_embeddings = encode_embeddings(passages, BI_ENCODER_MODEL, MAX_SEQ_LENGTH, DEVICE)
+        analysis_df, corpus_embeddings = fetch_docs_and_embed()
+        
     except Exception as e:
         logging.error(f"Embedding pipeline failed: {e}", exc_info=True)
         sys.exit(3)
