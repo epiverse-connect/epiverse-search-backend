@@ -41,7 +41,7 @@ RUN python -m nltk.downloader punkt_tab
 # COPY logging_config.yaml .
 # optional: keep your helper separate, if you want
 COPY utils.py ./utils.py
-COPY calculate_embeddings.py ./calculate_embeddings.py   
+#COPY calculate_embeddings.py ./calculate_embeddings.py   
 COPY run_calculate_embeddings.py ./run_calculate_embeddings.py
 
 # 7) Environment variables
