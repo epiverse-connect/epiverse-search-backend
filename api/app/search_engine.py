@@ -40,10 +40,13 @@ class SemanticSearchEngine:
 
     def _create_passages(self):
         passages = []
-        for start_idx in range(0, len(self.paragraphs), self.window_size):
-            end_idx = min(start_idx + self.window_size, len(self.paragraphs))
-            passages.append(";".join(self.paragraphs[start_idx:end_idx]))
+        # Group paragraphs by cluster_id
+        grouped = self.analysis_df.groupby('cluster_id')['tokenized_content'].apply(lambda x: ";".join(map(str, x)))
+        # Convert grouped data into a list of passages
+        passages = grouped.tolist()
+        logger.info(f"Generated {len(passages)} passages grouped by cluster_id.")
         return passages
+    
 
     def search(self, query: str, top_k: int = 32, num_results: int = 5):
         question_embedding = self.bi_encoder.encode(query, convert_to_tensor=True).to(self.device)

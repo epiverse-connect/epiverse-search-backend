@@ -1,48 +1,54 @@
-from pathlib import Path
-import pandas as pd
+import sys
+import io
 import time
-from nltk import sent_tokenize
-from sentence_transformers import SentenceTransformer
+import logging
+from pathlib import Path
+
 import torch
-import glob
-import yaml
+import pandas as pd
+from sentence_transformers import SentenceTransformer
+from nltk import sent_tokenize
 import subprocess
-import logging.config
 import tempfile
-import os
+import glob
 
-config_path = os.path.join(os.path.dirname(__file__), 'logging_config.yaml')
+from utils import get_blob_service_client
 
-with open(config_path) as f:
-    config = yaml.safe_load(f)
+# 1) Configure logging to stdout (Container Apps captures stdout automatically) —
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s — %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
 
-logging.config.dictConfig(config)
-logger = logging.getLogger(__name__)
-
-# --- Configuration ---
-tmpdir = tempfile.TemporaryDirectory(prefix = "sources_")
-SOURCE_FOLDER = tmpdir.name
-BI_ENCODER_MODEL = 'multi-qa-MiniLM-L6-cos-v1' # map queries and documents into a dense vector space such that relevant pairs have high cosine similarity. Works with Cross encoder in API file
+# 2) Constants / hyperparameters 
+BI_ENCODER_MODEL = "multi-qa-MiniLM-L6-cos-v1" # map queries and documents into a dense vector space such that relevant pairs have high cosine similarity. Works with Cross encoder in API file
 MAX_SEQ_LENGTH = 256
 WINDOW_SIZE = 7
 MIN_SENTENCE_TOKENS = 5
 DEVICE = torch.device("cpu")
 
-# --- Utility Functions ---
+# Create a temporary directory for cloning/fetching docs
+tmpdir = tempfile.TemporaryDirectory(prefix="sources_")
+SOURCE_FOLDER = tmpdir.name
+
+# 3) Helper functions
+
+#    (a) fetch R‐universe docs via your R script
 def get_universe_docs(universe: str, destdir: str) -> None:
     try:
         subprocess.run(
-            ["Rscript", "-e", f"epiverse.scraper::get_universe_docs('{universe}', '{destdir}')"],
+            ["Rscript", "-e", f"epiverse.scraper::get_universe_docs('{universe}','{destdir}')"],
             check=True,
             capture_output=True,
-            text=True
+            text=True,
         )
-        logging.info("R script ran successfully\n")
+        logging.info("R script ran successfully.")
     except subprocess.CalledProcessError as e:
-        error = RuntimeError("Error running R script:\n" + e.stderr)
-        logging.error(error)
-        raise error
+        logging.error(f"Error running R script:\n{e.stderr}")
+        raise RuntimeError("Error running R script") from e
 
+#    (b) read markdown files from subfolders
 def read_md_files_from_subfolders(folder_path: str) -> dict:
     """Reads .md files from subfolders, excluding those in 'vignettes/man'.
        Args:
@@ -66,7 +72,7 @@ def read_md_files_from_subfolders(folder_path: str) -> dict:
     ]
 
     print(len(md_files))
-    logger.info(f"Found {len(md_files)} files to process.")
+    logging.info(f"Found {len(md_files)} files to process.")
     for md_file in md_files:
         path_obj = Path(md_file)
         try:
@@ -77,12 +83,11 @@ def read_md_files_from_subfolders(folder_path: str) -> dict:
                 file_data[folder_name] = []
             file_data[folder_name].append((path_obj.name, content))
         except Exception as e:
-            logger.error(f"Could not read {md_file}: {e}")
-    logger.info(f"Successfully read data from {len(file_data)} subfolders.")
+            logging.error(f"Could not read {md_file}: {e}")
+    logging.info(f"Successfully read data from {len(file_data)} subfolders.")
     return file_data
 
-
-
+#    (c) preprocess content → list of list of sentences
 def preprocess_content(content: str) -> list[list[str]]:
     """Cleans and tokenizes content into sentences.
     Args:
@@ -102,8 +107,7 @@ def preprocess_content(content: str) -> list[list[str]]:
                 sentences.append(filtered_sents)
     return sentences
 
-
-
+#    (d) create document list with tokenized content
 def create_document_list(file_data: dict) -> list[dict]:
     """Creates a list of dictionaries, each representing a document
     with metadata and tokenized content.
@@ -128,12 +132,11 @@ def create_document_list(file_data: dict) -> list[dict]:
                     'tokenized_content': tokenized_content
                 }
                 doc_list.append(temp_dict)
-    logger.info(
+    logging.info(
         f"Created a document list containing {len(doc_list)} documents.")
     return doc_list
 
-
-
+#    (e) explode & assign cluster IDs
 def create_analysis_dataframe(doc_list: list[dict], window_size: int) -> pd.DataFrame:
     """Creates and preprocesses the analysis DataFrame.
 
@@ -163,14 +166,12 @@ def create_analysis_dataframe(doc_list: list[dict], window_size: int) -> pd.Data
     analysis_df_exploded["cluster_id"] = cluster_ids
     analysis_df_exploded = analysis_df_exploded[['package_name', 'file_name', 'tokenized_content', 'cluster_id']]
 
-    logger.info(
+    logging.info(
         f"Created analysis DataFrame with {len(analysis_df_exploded)} rows of tokenized content.")
 
     return analysis_df_exploded
 
-
-
-
+#    (f) stitch sentences into passages
 def create_passages(analysis_df: pd.DataFrame) -> list[str]:
     """Creates passages by joining tokenized content within a sliding window.
 
@@ -189,8 +190,7 @@ def create_passages(analysis_df: pd.DataFrame) -> list[str]:
         passages.append('; '.join(window))
     return passages
 
-
-
+#    (g) encode passages → torch.Tensor
 def encode_embeddings(passages: list[str],
                       model_name: str, max_length: int,
                       device: DEVICE) -> None:
@@ -208,18 +208,17 @@ def encode_embeddings(passages: list[str],
                                           device=DEVICE)
     return corpus_embeddings
 
-
-# --- Main Execution ---
+# 4) Put it all together in a main() that also does Blob upload
 def fetch_docs_and_embed(universe: str = "epiverse-connect"):
     start_time = time.time()
 
-    logger.info("--- Fetching the documentation files ---")
+    logging.info("--- Fetching the documentation files ---")
     get_universe_docs(universe, SOURCE_FOLDER)
 
-    logger.info("--- Starting the document processing pipeline ---")
+    logging.info("--- Starting the document processing pipeline ---")
     file_data = read_md_files_from_subfolders(SOURCE_FOLDER)
 
-    logger.info("--- Creating Document List and Tokenizing Content ---")
+    logging.info("--- Creating Document List and Tokenizing Content ---")
     doc_list = create_document_list(file_data)
 
     analysis_df = create_analysis_dataframe(doc_list, WINDOW_SIZE)
@@ -230,6 +229,67 @@ def fetch_docs_and_embed(universe: str = "epiverse-connect"):
 
     end_time = time.time()
     total_time = end_time - start_time
-    logger.info(f"--- Finished processing in {total_time:.2f} seconds ---")
+    logging.info(f"--- Finished processing in {total_time:.2f} seconds ---")
 
     return analysis_df, corpus_embeddings
+
+def main():
+    start_time = time.time()
+    logging.info("=== Starting calculate-embeddings job ===")
+
+    # 4.2) Instantiate BlobServiceClient and container + blob names
+    try:
+        blob_service_client = get_blob_service_client()
+    except Exception as e:
+        logging.error(f"Failed to create BlobServiceClient: {e}", exc_info=True)
+        sys.exit(2)
+
+    container_name = "data"
+    blob_csv_name = "analysis_df.csv"
+    blob_pt_name = "corpus_embeddings.pth"
+
+    # 4.3) Ensure the container exists
+    container_client = blob_service_client.get_container_client(container_name)
+    try:
+        container_client.create_container()
+        logging.info(f"Created container '{container_name}'")
+    except Exception:
+        logging.info(f"Container '{container_name}' already exists (or creation failed).")
+
+    # 4.4) Fetch docs, tokenize, embed
+    try:
+        analysis_df, corpus_embeddings = fetch_docs_and_embed()
+        
+    except Exception as e:
+        logging.error(f"Embedding pipeline failed: {e}", exc_info=True)
+        sys.exit(3)
+
+    # 4.5) Upload analysis_df as CSV
+    try:
+        csv_data = analysis_df.to_csv(index=False).encode("utf-8")
+        blob_csv_client = container_client.get_blob_client(blob_csv_name)
+        blob_csv_client.upload_blob(csv_data, overwrite=True)
+        logging.info(f"Uploaded analysis_df to '{container_name}/{blob_csv_name}'")
+    except Exception as e:
+        logging.error(f"Failed to upload analysis_df CSV: {e}", exc_info=True)
+        sys.exit(4)
+
+    # 4.6) Serialize embeddings → BytesIO → upload as .pth
+    try:
+        buffer = io.BytesIO()
+        torch.save(corpus_embeddings, buffer)
+        buffer.seek(0)
+        blob_pth_client = container_client.get_blob_client(blob_pt_name)
+        blob_pth_client.upload_blob(buffer, overwrite=True)
+        logging.info(f"Uploaded corpus_embeddings to '{container_name}/{blob_pt_name}'")
+    except Exception as e:
+        logging.error(f"Failed to upload corpus_embeddings .pth: {e}", exc_info=True)
+        sys.exit(5)
+
+    total_time = time.time() - start_time
+    logging.info(f"=== Job completed in {total_time:.2f} seconds ===")
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

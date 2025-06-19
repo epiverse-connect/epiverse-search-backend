@@ -1,7 +1,7 @@
 import torch
 import logging
 import sys
-from calculate_embeddings import fetch_docs_and_embed
+from run_calculate_embeddings import fetch_docs_and_embed
 
 OUTPUT_EMBEDDINGS_PATH = 'corpus_embeddings.pth'
 OUTPUT_ANALYSIS_DF_PATH = 'analysis_df.csv'

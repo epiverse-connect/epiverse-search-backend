@@ -13,9 +13,11 @@ services:
   fetch-universe-metadata:
     build: ./jobs/fetch-universe-metadata
     container_name: fetch-universe-metadata
-    working_dir: /home/site/wwwroot
+    working_dir: /app
     environment:
       - AzureWebJobsStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
+      - USE_AZURE_STORAGE=true
+      - env=local
     depends_on:
       - azurite
     command: func start --verbose
@@ -23,9 +25,11 @@ services:
   calculate-embeddings:
     build: ./jobs/calculate-embeddings
     container_name: calculate-embeddings
-    working_dir: /home/site/wwwroot
+    working_dir: /app
     environment:
       - AzureWebJobsStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
+      - USE_AZURE_STORAGE=true
+      - env=local
     depends_on:
       - azurite
     command: func start --verbose
@@ -39,11 +43,14 @@ services:
     environment:
       - AzureWebJobsStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
       - USE_AZURE_STORAGE=true
+      - env=local
     depends_on:
       fetch-universe-metadata:
         condition: service_started
       calculate-embeddings:
         condition: service_started
+    volumes:
+      - ./api:/api
     # 5 min should be enough to ensure the previous steps had time to run and generate the necessary data
     command: sh -c "sleep 300 && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
