@@ -8,7 +8,7 @@ def get_blob_service_client():
     env = os.getenv("env")
     conn_str = os.getenv("AzureWebJobsStorage")
     # If running locally, use the connection string from environment variable
-    logging.info(f"env: {env}", f"conn_str: {conn_str}")
+    logging.info(f"env: {env}, conn_str: {conn_str}")
     if env == "local" and conn_str:
         logging.info("Using local Azure Blob Storage connection string.")
         return BlobServiceClient.from_connection_string(conn_str)
