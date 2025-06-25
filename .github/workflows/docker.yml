@@ -9,7 +9,7 @@ on:
       - 'docker-compose.yaml'
       - 'requirements.txt'
       - 'Dockerfile'
-      - '.github/workflows/docker-backend.yml'
+      - '.github/workflows/docker.yml'
 
 env:
   REGISTRY: ghcr.io
@@ -33,6 +33,36 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract API Docker metadata
+        id: api_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Extract Fetch Universe Metadata Docker metadata
+        id: fetch_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-fetch-universe-metadata
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Extract Calculate Embeddings Docker metadata
+        id: calc_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-calculate-embeddings
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
       # Build and push API image
       - name: Build and push API image
         uses: docker/build-push-action@v6
@@ -40,7 +70,8 @@ jobs:
           context: ./api
           file: ./api/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:latest
+          tags: ${{ steps.api_meta.outputs.tags }}
+          labels: ${{ steps.api_meta.outputs.labels }}
 
       # Build and push fetch-universe-metadata image
       - name: Build and push fetch-universe-metadata image
@@ -49,7 +80,8 @@ jobs:
           context: ./jobs/fetch-universe-metadata
           file: ./jobs/fetch-universe-metadata/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-fetch-universe-metadata:latest
+          tags: ${{ steps.fetch_meta.outputs.tags }}
+          labels: ${{ steps.fetch_meta.outputs.labels }}
 
       # Build and push calculate-embeddings image
       - name: Build and push calculate-embeddings image
@@ -58,4 +90,5 @@ jobs:
           context: ./jobs/calculate-embeddings
           file: ./jobs/calculate-embeddings/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-calculate-embeddings:latest
+          tags: ${{ steps.calc_meta.outputs.tags }}
+          labels: ${{ steps.calc_meta.outputs.labels }}
