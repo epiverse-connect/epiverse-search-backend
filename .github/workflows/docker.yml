@@ -33,21 +33,29 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Build and push Docker image
+      # Build and push API image
+      - name: Build and push API image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./api
+          file: ./api/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:latest
+
+      # Build and push fetch-universe-metadata image
+      - name: Build and push fetch-universe-metadata image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./jobs/fetch-universe-metadata
+          file: ./jobs/fetch-universe-metadata/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-fetch-universe-metadata:latest
+
+      # Build and push calculate-embeddings image
+      - name: Build and push calculate-embeddings image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./jobs/calculate-embeddings
+          file: ./jobs/calculate-embeddings/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-calculate-embeddings:latest
