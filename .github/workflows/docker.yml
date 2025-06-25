@@ -1,0 +1,94 @@
+name: Build and Push Backend Docker Image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/**'
+      - 'jobs/**'
+      - 'docker-compose.yaml'
+      - 'requirements.txt'
+      - 'Dockerfile'
+      - '.github/workflows/docker.yml'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract API Docker metadata
+        id: api_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Extract Fetch Universe Metadata Docker metadata
+        id: fetch_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-fetch-universe-metadata
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Extract Calculate Embeddings Docker metadata
+        id: calc_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-calculate-embeddings
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # Build and push API image
+      - name: Build and push API image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./api
+          file: ./api/Dockerfile
+          push: true
+          tags: ${{ steps.api_meta.outputs.tags }}
+          labels: ${{ steps.api_meta.outputs.labels }}
+
+      # Build and push fetch-universe-metadata image
+      - name: Build and push fetch-universe-metadata image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./jobs/fetch-universe-metadata
+          file: ./jobs/fetch-universe-metadata/Dockerfile
+          push: true
+          tags: ${{ steps.fetch_meta.outputs.tags }}
+          labels: ${{ steps.fetch_meta.outputs.labels }}
+
+      # Build and push calculate-embeddings image
+      - name: Build and push calculate-embeddings image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./jobs/calculate-embeddings
+          file: ./jobs/calculate-embeddings/Dockerfile
+          push: true
+          tags: ${{ steps.calc_meta.outputs.tags }}
+          labels: ${{ steps.calc_meta.outputs.labels }}
