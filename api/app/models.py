@@ -5,8 +5,12 @@ class SearchResult(BaseModel):
     logo: str | None = None
     website: str | None = None
     source: str | None = None
-    vignettes: list[str] | None = None
+    vignettes: list[str] | None = Field(default=None, alias="articles")
     relevance: float
+
+    class Config:
+        allow_population_by_field_name = True  # Allows using 'vignettes' in code
+
 
 class SearchResponse(BaseModel):
     query: str

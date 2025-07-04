@@ -31,7 +31,7 @@ class SemanticSearchEngine:
         self.bi_encoder.max_seq_length = 256
         self.cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
         self.analysis_df = pd.read_csv(analysis_df_path)
-        package_descr_df = pd.read_json(package_descr_path, dtype=str)
+        package_descr_df = pd.read_json(package_descr_path)# pd.read_json(package_descr_path, dtype=str)
         self.analysis_df = self.analysis_df.merge(package_descr_df, left_on='package_name', right_on='package', how='left')
         self.paragraphs = [str(s) for s in self.analysis_df['tokenized_content'].to_list()]
         self.window_size = 7
@@ -74,6 +74,6 @@ class SemanticSearchEngine:
 
         # Sort by relevance and Remove duplicates
         results_df = merged_renamed.sort_values(by='relevance', ascending=False).drop_duplicates(subset=['package_name'], keep='first')
-        results_df = results_df.fillna('')
+        #results_df = results_df.fillna('')
 
         return results_df.to_dict('records')
