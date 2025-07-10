@@ -15,6 +15,7 @@ class SearchResult(BaseModel):
         validate_by_name = True  # Allows using 'vignettes' in code
         by_alias = False 
 
+
 class SearchResponse(BaseModel):
     query: str
     filter: str
