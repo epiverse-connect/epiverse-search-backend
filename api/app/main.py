@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRouter
-from app.models import SearchResponse
+from app.models import SearchResponse,SearchResult
 from app.search_engine import SemanticSearchEngine
 from app.utils import load_data_from_blob
 import json
@@ -86,16 +86,20 @@ async def initialize_search_engine():
         raise RuntimeError("Search engine initialization failed") from e
 
 
-@router.get("/search", response_model=SearchResponse)
+@router.get("/search", response_model=SearchResponse, response_model_by_alias=False)
 def get_data(query: str = Query(..., description="User query string")):
 
     logger.info("Input question:{query}") 
     results = search_engine.search(query)
+    results_dicts = [
+        SearchResult(**result).dict(by_alias=False)
+        for result in results
+    ]
     json_response = {
         "query": query,
         "filter": "epiverse",
         "response": {
-            "results": results,
+            "results": results_dicts,
         }
     }
     logger.info(f"Response: {json.dumps(json_response, indent=2)}")

@@ -1,7 +1,10 @@
 from pydantic import BaseModel, Field
 
 class SearchResult(BaseModel):
-    package_name: str
+    package: str
+    title: str
+    description: str | None = None
+    language: str = "R"  # Added static field
     logo: str | None = None
     website: str | None = None
     source: str | None = None
@@ -9,7 +12,8 @@ class SearchResult(BaseModel):
     relevance: float
 
     class Config:
-        allow_population_by_field_name = True  # Allows using 'vignettes' in code
+        validate_by_name = True  # Allows using 'vignettes' in code
+        by_alias = False 
 
 
 class SearchResponse(BaseModel):
