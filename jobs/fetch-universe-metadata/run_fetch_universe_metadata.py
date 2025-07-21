@@ -1,9 +1,8 @@
-import os
 import sys
 import json
 import logging
-from azure.storage.blob import BlobServiceClient
 from fetch_universe_metadata import fetch_universe_metadata
+from utils import get_blob_service_client
 
 # — Configure logging to stdout (Container Apps captures stdout automatically) —
 logging.basicConfig(
@@ -13,19 +12,8 @@ logging.basicConfig(
 )
 
 def main():
-    logging.info("Starting Fetch Universe Metadata job")
-
-    # 1. Read the connection string (or raise if missing)
-    connection_str = os.getenv("AzureWebJobsStorage")
-    if not connection_str:
-        logging.error("AzureWebJobsStorage environment variable is not set!")
-        sys.exit(1)
-
-    logging.info(f"Using AzureWebJobsStorage: {connection_str}")
-
-    # 2. Create BlobServiceClient and container client
     try:
-        blob_service_client = BlobServiceClient.from_connection_string(connection_str)
+        blob_service_client = get_blob_service_client()
     except Exception as e:
         logging.error(f"Failed to create BlobServiceClient: {e}", exc_info=True)
         sys.exit(1)
@@ -39,9 +27,10 @@ def main():
         container_client.create_container()
         logging.info(f"Created container '{container_name}'")
     except Exception:
-        logging.info(f"Container '{container_name}' already exists (or failed to create)")
+        logging.info(f"Container '{container_name}' already exists (or creation failed).")
 
-    # 3. Fetch the metadata
+
+    # Fetch the metadata
     try:
         processed_metadata = fetch_universe_metadata("epiverse-connect")
         logging.info(f"Fetched metadata: {len(processed_metadata)} packages")
@@ -49,7 +38,7 @@ def main():
         logging.error(f"Failed to fetch metadata: {e}", exc_info=True)
         sys.exit(1)
 
-    # 4. Upload the JSON to blob
+    # Upload the JSON to blob
     try:
         blob_client = container_client.get_blob_client(blob_name)
         blob_client.upload_blob(
