@@ -14,6 +14,7 @@ EXPOSE 8000
 ENV env=production
 ENV USE_AZURE_STORAGE=true
 ENV AZURE_STORAGE_ACCOUNT_NAME=
+ENV ORIGINS=
 
 #
 # RUN pip install -r requirements.txt
